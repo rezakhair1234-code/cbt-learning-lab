@@ -1,187 +1,119 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Psychology Learning Lab: a bilingual psychology learning platform.">
-<title>Psychology Learning Lab</title>
+<title>Psychology Learning Lab | آزمایشگاه یادگیری روان‌شناسی</title>
 <style>
-:root{--bg:#f5f7fb;--ink:#19283f;--muted:#627087;--blue:#3d5d91;--teal:#347c75;--line:#dfe5ee;--white:#fff}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:85px}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.85}
-body[dir=ltr]{font-family:Arial,Helvetica,sans-serif}
-a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer}
-.wrap{width:min(1120px,92%);margin:auto}
-header{position:sticky;top:0;z-index:10;background:#ffffffef;border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
-.head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.logo{width:40px;height:40px;border-radius:13px;background:var(--ink);color:white;display:grid;place-items:center;font-size:24px}
-nav{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
-nav a{font-size:12px;color:var(--muted);font-weight:bold}
-nav a:hover{color:var(--blue)}
-.tools{display:flex;gap:7px}
-.tool{border:1px solid var(--line);background:white;color:var(--ink);border-radius:10px;padding:8px 11px}
-#menu{display:none}
-.hero{padding:65px 0 48px;background:radial-gradient(circle at 10% 10%,#dfe9fa,transparent 34%),linear-gradient(130deg,#fafbff,#eaf0f8)}
-.hero-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:center}
-.eyebrow{font-size:12px;color:var(--teal);font-weight:800}
-h1{font-size:clamp(34px,5vw,55px);line-height:1.35;margin:12px 0}
-h1 span{color:var(--blue)}
-h2{font-size:clamp(23px,3vw,31px);line-height:1.5;margin:4px 0 10px}
-h3{font-size:17px;margin:0 0 7px}
-p{margin-top:6px}
-.lead{font-size:16px;color:var(--muted);max-width:700px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.btn{display:inline-block;background:var(--ink);color:white;padding:10px 16px;border-radius:11px;font-weight:bold;border:1px solid var(--ink)}
-.btn.light{background:white;color:var(--ink);border-color:var(--line)}
-.panel,.card,.stat,.path{background:white;border:1px solid var(--line);border-radius:16px;padding:19px}
-.panel{padding:25px;box-shadow:0 12px 30px #1a2a400d}
-.panel ul{padding-inline-start:22px;color:var(--muted)}
-.pill,.tag{display:inline-block;background:#e9f3f1;color:#28645d;padding:4px 9px;border-radius:30px;font-size:11px;font-weight:bold}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:22px}
-.stat{padding:11px}
-.stat strong{display:block;font-size:21px}
-.stat span{font-size:11px;color:var(--muted)}
-section.content{padding:52px 0}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
-.section-head p{max-width:620px;color:var(--muted);margin:0}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.card{padding:19px;transition:.15s}
-.card:hover{border-color:#aebfd9;transform:translateY(-2px)}
-.ico{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#edf1f8;font-size:21px;margin-bottom:12px}
-.card p{font-size:13px;color:var(--muted);margin:7px 0 12px}
-.tag{background:#eff2f7;color:#526079;margin:2px}
-.feature{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;background:#192b43;color:white;padding:28px;border-radius:21px}
-.feature p{color:#d0d9e6}
-.feature .eyebrow{color:#a9d9d4}
-.paths{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
-.path{padding:15px}
-.path b{display:block}
-.path small{color:var(--muted)}
-.resources{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.resource{display:flex;gap:12px}
-.resource .ico{flex-shrink:0}
-.notice{padding:20px;border:1px solid #cfe2df;background:#edf6f4;border-radius:15px;color:#2a5c57}
-footer{padding:25px 0;background:white;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
-.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-body[dir=ltr] .hero-grid{direction:ltr}
-[hidden]{display:none!important}
-@media(max-width:900px){nav{gap:8px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.paths{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:680px){
-.head{padding:9px 0}.brand{font-size:12px}.logo{width:36px;height:36px}
-#menu{display:inline-block}
-nav{display:none;width:100%;grid-template-columns:repeat(2,1fr);gap:0;padding-bottom:8px}
-nav.open{display:grid}
-nav a{padding:10px;border-top:1px solid var(--line)}
-.hero{padding:38px 0 28px}.hero-grid{grid-template-columns:1fr;gap:20px}
-h1{font-size:35px}.lead{font-size:14px}
-.grid,.resources{grid-template-columns:1fr}
-.section-head{display:block}.section-head p{margin-top:8px}
-section.content{padding:38px 0}
-.feature{grid-template-columns:1fr;padding:22px}
-.paths{grid-template-columns:1fr 1fr}
-.stats{gap:5px}.stat{padding:8px}.stat strong{font-size:18px}.stat span{font-size:10px}
-}
+:root{--bg:#f4f6fb;--card:#fff;--ink:#20283a;--muted:#647087;--line:#e0e6f0;--accent:#3157a4;--soft:#eaf0ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
+button,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 12px}button:hover{background:var(--soft)}
+header{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px}.top{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:bold;font-size:1.08rem}.brand small{display:block;font-weight:normal;color:var(--muted);font-size:.78rem}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.layout{max-width:1200px;margin:20px auto;padding:0 14px;display:grid;grid-template-columns:275px minmax(0,1fr);gap:18px}
+aside,.hero,.panel,.topic{background:var(--card);border:1px solid var(--line);border-radius:16px}aside{padding:13px;height:max-content;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.search{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fff;color:var(--ink)}
+.navgroup{border:1px solid var(--line);border-radius:10px;margin:7px 0;overflow:hidden}.navhead{width:100%;text-align:start;border:0;border-radius:0;display:flex;justify-content:space-between;font-weight:bold}.navitems{display:none;padding:4px}.navgroup.open .navitems{display:block}.navitem{display:block;width:100%;border:0;text-align:start;padding:7px 10px;font-size:.91rem}
+.hero{padding:27px;margin-bottom:17px;background:linear-gradient(135deg,#fff,#edf2ff)}h1{font-size:clamp(1.5rem,4vw,2.2rem);margin:0 0 8px}.hero p,.muted{color:var(--muted)}.hero p{margin:0}.hero-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.primary:hover{background:#244582;color:#fff}
+.section-title{font-size:1.2rem;margin:18px 2px 10px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.topic{width:100%;text-align:start;padding:16px;color:var(--ink)}.topic strong{display:block;margin-bottom:5px}.topic span{display:block;color:var(--muted);font-size:.9rem}.topic:hover{border-color:#9fb3e6}
+.panel{padding:22px;min-height:250px}.panel h2{margin-top:12px}.tags{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tag{background:var(--soft);color:#244483;border-radius:999px;padding:4px 10px;font-size:.84rem}.mobile-menu{display:none}footer{text-align:center;color:var(--muted);font-size:.84rem;padding:25px}
+[dir="ltr"] body{text-align:left}
+@media(max-width:800px){.layout{grid-template-columns:1fr;margin-top:12px}aside{display:none;position:static;max-height:none}.mobile-menu{display:inline-block}aside.show{display:block}.cards{grid-template-columns:1fr}.hero{padding:20px}}
 </style>
 </head>
-<body dir="rtl">
-<header>
-<div class="wrap head">
-<a class="brand" href="#home"><span class="logo">Ψ</span><span>Psychology Learning Lab</span></a>
-<div class="tools">
-<button class="tool" id="lang">English</button>
-<button class="tool" id="menu" aria-expanded="false">منو ☰</button>
-</div>
-<nav id="nav">
-<a href="#home" data-fa="خانه" data-en="Home">خانه</a>
-<a href="#fields" data-fa="شاخه‌ها" data-en="Fields">شاخه‌ها</a>
-<a href="#therapies" data-fa="رویکردها" data-en="Approaches">رویکردها</a>
-<a href="#cbt" data-fa="مسیر CBT" data-en="CBT Path">مسیر CBT</a>
-<a href="#research" data-fa="پژوهش" data-en="Research">پژوهش</a>
-<a href="#assessment" data-fa="ارزیابی" data-en="Assessment">ارزیابی</a>
-<a href="#resources" data-fa="منابع" data-en="Resources">منابع</a>
-<a href="#about" data-fa="درباره" data-en="About">درباره</a>
-</nav>
-</div>
-</header>
-
+<body>
+<header><div class="top">
+<div class="brand" id="brand">آزمایشگاه یادگیری روان‌شناسی<small>Psychology Learning Lab</small></div>
+<div class="actions"><button class="mobile-menu" id="menuToggle">☰ فهرست</button><button id="langToggle">English</button><button id="homeButton">صفحه اصلی</button></div>
+</div></header>
+<div class="layout">
+<aside id="sidebar"><input class="search" id="search" type="search" placeholder="جست‌وجو در موضوعات..."><div id="navigation"></div></aside>
 <main>
-<section class="hero" id="home">
-<div class="wrap hero-grid">
-<div>
-<div class="eyebrow" data-fa="یادگیری روان‌شناسی بر پایه علم" data-en="Evidence-informed psychology learning">یادگیری روان‌شناسی بر پایه علم</div>
-<h1 data-fa="روان‌شناسی را عمیق یاد بگیر؛ <span>علمی فکر کن.</span>" data-en="Learn psychology deeply. <span>Think scientifically.</span>">روان‌شناسی را عمیق یاد بگیر؛ <span>علمی فکر کن.</span></h1>
-<p class="lead" data-fa="محیطی ساختارمند برای دانشجویان، پژوهشگران و متخصصان؛ از مبانی نظری و روش تحقیق تا ارزیابی روان‌شناختی و مداخلات مبتنی بر شواهد." data-en="A structured learning hub for students, researchers, and practitioners—from foundational theory and research methods to psychological assessment and evidence-informed interventions.">محیطی ساختارمند برای دانشجویان، پژوهشگران و متخصصان؛ از مبانی نظری و روش تحقیق تا ارزیابی روان‌شناختی و مداخلات مبتنی بر شواهد.</p>
-<div class="actions">
-<a class="btn" href="#fields" data-fa="کاوش شاخه‌ها ←" data-en="Explore fields →">کاوش شاخه‌ها ←</a>
-<a class="btn light" href="#cbt" data-fa="ورود به مسیر CBT" data-en="Explore CBT">ورود به مسیر CBT</a>
-</div>
-<div class="stats">
-<div class="stat"><strong>12+</strong><span data-fa="حوزه یادگیری" data-en="Learning areas">حوزه یادگیری</span></div>
-<div class="stat"><strong>2</strong><span data-fa="زبان" data-en="Languages">زبان</span></div>
-<div class="stat"><strong>01</strong><span data-fa="مسیر یادگیری پیوسته" data-en="Connected learning path">مسیر یادگیری پیوسته</span></div>
-</div>
-</div>
-<aside class="panel">
-<span class="pill" data-fa="مسیر پیشنهادی" data-en="Suggested pathway">مسیر پیشنهادی</span>
-<h2 data-fa="از دانش تا کاربرد" data-en="From knowledge to application">از دانش تا کاربرد</h2>
-<p data-fa="مفاهیم را مرحله‌به‌مرحله یاد بگیر، با پرسش بررسی کن و ارتباط آن‌ها را با پژوهش و عمل بسنج." data-en="Learn concepts step by step, test them with questions, and connect them to research and practice.">مفاهیم را مرحله‌به‌مرحله یاد بگیر، با پرسش بررسی کن و ارتباط آن‌ها را با پژوهش و عمل بسنج.</p>
-<ul>
-<li data-fa="مبانی و نظریه‌ها" data-en="Foundations and theories">مبانی و نظریه‌ها</li>
-<li data-fa="روش تحقیق و تفکر نقادانه" data-en="Research methods and critical thinking">روش تحقیق و تفکر نقادانه</li>
-<li data-fa="ارزیابی و کاربرد بالینی" data-en="Assessment and clinical application">ارزیابی و کاربرد بالینی</li>
-</ul>
-</aside>
-</div>
+<section class="hero">
+<h1 id="heroTitle">آزمایشگاه یادگیری روان‌شناسی</h1>
+<p id="heroText">محیطی برای یادگیری ساختارمند روان‌شناسی، شناخت رویکردهای درمانی و دسترسی منظم به منابع علمی معتبر.</p>
+<div class="hero-tools"><button class="primary" data-open="CBT">شروع یادگیری CBT</button><button data-open="Research">روش‌شناسی و پژوهش</button><button data-open="Library">کتابخانه منابع</button></div>
 </section>
-
-<section class="content wrap" id="fields">
-<div class="section-head"><div><div class="eyebrow" data-fa="نقشه دانش" data-en="Knowledge map">نقشه دانش</div><h2 data-fa="شاخه‌های روان‌شناسی" data-en="Fields of psychology">شاخه‌های روان‌شناسی</h2></div>
-<p data-fa="هر شاخه حوزه‌ای مستقل برای گسترش تدریجی درس‌ها، مثال‌ها، تمرین‌ها و منابع علمی است." data-en="Each field is an independent area for expanding lessons, examples, exercises, and academic resources.">هر شاخه حوزه‌ای مستقل برای گسترش تدریجی درس‌ها، مثال‌ها، تمرین‌ها و منابع علمی است.</p></div>
-<div class="grid">
-<a class="card" href="#foundations"><div class="ico">📚</div><h3 data-fa="مبانی و تاریخچه" data-en="Foundations & History">مبانی و تاریخچه</h3><p data-fa="تعریف روان‌شناسی، مکاتب اصلی، تاریخ تحول و نظریه‌سازی." data-en="Definitions, major schools, historical development, and theory building.">تعریف روان‌شناسی، مکاتب اصلی، تاریخ تحول و نظریه‌سازی.</p><span class="tag">Theory</span><span class="tag">History</span></a>
-<a class="card" href="#cognitive"><div class="ico">🧠</div><h3 data-fa="روان‌شناسی شناختی" data-en="Cognitive Psychology">روان‌شناسی شناختی</h3><p data-fa="توجه، حافظه، ادراک، زبان، تصمیم‌گیری و استدلال." data-en="Attention, memory, perception, language, decision-making, and reasoning.">توجه، حافظه، ادراک، زبان، تصمیم‌گیری و استدلال.</p><span class="tag">Memory</span><span class="tag">Attention</span></a>
-<a class="card" href="#development"><div class="ico">🌱</div><h3 data-fa="روان‌شناسی رشد" data-en="Developmental Psychology">روان‌شناسی رشد</h3><p data-fa="تغییرات شناختی، هیجانی و اجتماعی در طول عمر." data-en="Cognitive, emotional, and social changes across the lifespan.">تغییرات شناختی، هیجانی و اجتماعی در طول عمر.</p></a>
-<a class="card" href="#personality"><div class="ico">🪞</div><h3 data-fa="روان‌شناسی شخصیت" data-en="Personality Psychology">روان‌شناسی شخصیت</h3><p data-fa="صفات، تفاوت‌های فردی، نظریه‌های شخصیت و سنجش آن." data-en="Traits, individual differences, personality theories, and assessment.">صفات، تفاوت‌های فردی، نظریه‌های شخصیت و سنجش آن.</p></a>
-<a class="card" href="#social"><div class="ico">👥</div><h3 data-fa="روان‌شناسی اجتماعی و فرهنگی" data-en="Social & Cultural Psychology">روان‌شناسی اجتماعی و فرهنگی</h3><p data-fa="گروه، هویت، نگرش، نفوذ اجتماعی و فرهنگ." data-en="Groups, identity, attitudes, social influence, and culture.">گروه، هویت، نگرش، نفوذ اجتماعی و فرهنگ.</p></a>
-<a class="card" href="#biological"><div class="ico">🧬</div><h3 data-fa="روان‌شناسی زیستی و عصب‌روان‌شناسی" data-en="Biological Psychology & Neuropsychology">روان‌شناسی زیستی و عصب‌روان‌شناسی</h3><p data-fa="مغز، دستگاه عصبی، شناخت و رفتار." data-en="The brain, nervous system, cognition, and behavior.">مغز، دستگاه عصبی، شناخت و رفتار.</p></a>
-<a class="card" href="#clinical"><div class="ico">🩺</div><h3 data-fa="روان‌شناسی بالینی و آسیب‌شناسی" data-en="Clinical Psychology & Psychopathology">روان‌شناسی بالینی و آسیب‌شناسی</h3><p data-fa="ارزیابی، تشخیص افتراقی، عوامل خطر و درمان اختلالات." data-en="Assessment, differential diagnosis, risk factors, and treatment.">ارزیابی، تشخیص افتراقی، عوامل خطر و درمان اختلالات.</p></a>
-<a class="card" href="#educational"><div class="ico">🎓</div><h3 data-fa="روان‌شناسی تربیتی" data-en="Educational Psychology">روان‌شناسی تربیتی</h3><p data-fa="یادگیری، انگیزش، آموزش و تفاوت‌های یادگیرندگان." data-en="Learning, motivation, instruction, and learner differences.">یادگیری، انگیزش، آموزش و تفاوت‌های یادگیرندگان.</p></a>
-<a class="card" href="#health"><div class="ico">🌿</div><h3 data-fa="روان‌شناسی سلامت" data-en="Health Psychology">روان‌شناسی سلامت</h3><p data-fa="ارتباط رفتار، استرس، سلامت جسم و تغییر عادت‌ها." data-en="Behavior, stress, physical health, and habit change.">ارتباط رفتار، استرس، سلامت جسم و تغییر عادت‌ها.</p></a>
-<a class="card" href="#industrial"><div class="ico">🏢</div><h3 data-fa="روان‌شناسی صنعتی و سازمانی" data-en="Industrial & Organizational Psychology">روان‌شناسی صنعتی و سازمانی</h3><p data-fa="عملکرد، رهبری، انتخاب کارکنان و رفتار سازمانی." data-en="Performance, leadership, employee selection, and organizational behavior.">عملکرد، رهبری، انتخاب کارکنان و رفتار سازمانی.</p></a>
-<a class="card" href="#quantitative"><div class="ico">📊</div><h3 data-fa="آمار، روش تحقیق و روان‌سنجی" data-en="Quantitative Psychology & Psychometrics">آمار، روش تحقیق و روان‌سنجی</h3><p data-fa="طراحی پژوهش، تحلیل داده، پایایی و روایی آزمون‌ها." data-en="Research design, data analysis, and test reliability and validity.">طراحی پژوهش، تحلیل داده، پایایی و روایی آزمون‌ها.</p></a>
-<a class="card" href="#positive"><div class="ico">✨</div><h3 data-fa="روان‌شناسی مثبت و کاربردی" data-en="Positive & Applied Psychology">روان‌شناسی مثبت و کاربردی</h3><p data-fa="بهزیستی، نقاط قوت، معنا و کاربرد روان‌شناسی در زندگی." data-en="Well-being, strengths, meaning, and psychology in everyday life.">بهزیستی، نقاط قوت، معنا و کاربرد روان‌شناسی در زندگی.</p></a>
-</div>
-</section>
-
-<section class="content wrap" id="therapies">
-<div class="section-head"><div><div class="eyebrow" data-fa="رویکردهای درمانی" data-en="Therapeutic approaches">رویکردهای درمانی</div><h2 data-fa="رویکردها و مهارت‌های بالینی" data-en="Approaches & clinical skills">رویکردها و مهارت‌های بالینی</h2></div>
-<p data-fa="هر رویکرد باید بر اساس نظریه، شواهد پژوهشی، نیاز مراجع و محدودیت‌های آن بررسی شود." data-en="Each approach should be examined in relation to theory, research evidence, client needs, and its limitations.">هر رویکرد باید بر اساس نظریه، شواهد پژوهشی، نیاز مراجع و محدودیت‌های آن بررسی شود.</p></div>
-<div class="feature"><div><div class="eyebrow" data-fa="مسیر آموزشی ویژه" data-en="Dedicated learning pathway">مسیر آموزشی ویژه</div><h2 data-fa="درمان شناختی رفتاری (CBT)" data-en="Cognitive Behavioral Therapy (CBT)">درمان شناختی رفتاری (CBT)</h2><p data-fa="از مدل شناختی و ارزیابی تا فرمول‌بندی مورد، انتخاب مداخله و سنجش پیامد." data-en="From the cognitive model and assessment to case formulation, intervention selection, and outcome measurement.">از مدل شناختی و ارزیابی تا فرمول‌بندی مورد، انتخاب مداخله و سنجش پیامد.</p></div><a class="btn light" href="#cbt" data-fa="مشاهده مسیر ←" data-en="View pathway →">مشاهده مسیر ←</a></div>
-<div class="grid" style="margin-top:15px">
-<article class="card"><div class="ico">🔄</div><h3 data-fa="درمان مبتنی بر پذیرش و تعهد (ACT)" data-en="Acceptance and Commitment Therapy (ACT)">درمان مبتنی بر پذیرش و تعهد (ACT)</h3><p data-fa="انعطاف‌پذیری روان‌شناختی، پذیرش، گسلش شناختی و عمل ارزش‌محور." data-en="Psychological flexibility, acceptance, cognitive defusion, and values-based action.">انعطاف‌پذیری روان‌شناختی، پذیرش، گسلش شناختی و عمل ارزش‌محور.</p></article>
-<article class="card"><div class="ico">🧩</div><h3 data-fa="رفتاردرمانی دیالکتیکی (DBT)" data-en="Dialectical Behavior Therapy (DBT)">رفتاردرمانی دیالکتیکی (DBT)</h3><p data-fa="تنظیم هیجان، تحمل پریشانی، ذهن‌آگاهی و اثربخشی بین‌فردی." data-en="Emotion regulation, distress tolerance, mindfulness, and interpersonal effectiveness.">تنظیم هیجان، تحمل پریشانی، ذهن‌آگاهی و اثربخشی بین‌فردی.</p></article>
-<article class="card"><div class="ico">🤝</div><h3 data-fa="ذهنی‌سازی و درمان بین‌فردی" data-en="Mentalization & Interpersonal Therapy">ذهنی‌سازی و درمان بین‌فردی</h3><p data-fa="فهم حالات ذهنی خود و دیگران و بررسی الگوهای روابط." data-en="Understanding mental states and examining interpersonal patterns.">فهم حالات ذهنی خود و دیگران و بررسی الگوهای روابط.</p></article>
-<article class="card"><div class="ico">🛋️</div><h3 data-fa="رویکردهای روان‌پویشی و انسان‌گرا" data-en="Psychodynamic & Humanistic Approaches">رویکردهای روان‌پویشی و انسان‌گرا</h3><p data-fa="بررسی نظریه، رابطه درمانی، تغییر و کیفیت شواهد." data-en="Examining theory, therapeutic relationships, change, and evidence quality.">بررسی نظریه، رابطه درمانی، تغییر و کیفیت شواهد.</p></article>
-<article class="card"><div class="ico">👨‍👩‍👧</div><h3 data-fa="خانواده‌درمانی" data-en="Family Therapy">خانواده‌درمانی</h3><p data-fa="تعامل‌ها، الگوهای ارتباطی و نگاه سیستمی به مشکلات." data-en="Interactions, communication patterns, and systemic perspectives.">تعامل‌ها، الگوهای ارتباطی و نگاه سیستمی به مشکلات.</p></article>
-<article class="card"><div class="ico">🗣️</div><h3 data-fa="مهارت‌های بالینی" data-en="Clinical Skills">مهارت‌های بالینی</h3><p data-fa="مصاحبه، گوش‌دادن، همکاری درمانی، هدف‌گذاری و بازخورد." data-en="Interviewing, listening, therapeutic collaboration, goal-setting, and feedback.">مصاحبه، گوش‌دادن، همکاری درمانی، هدف‌گذاری و بازخورد.</p></article>
-</div>
-</section>
-
-<section class="content wrap" id="cbt">
-<div class="section-head"><div><div class="eyebrow">CBT LEARNING PATH</div><h2 data-fa="مسیر جامع یادگیری CBT" data-en="Comprehensive CBT learning path">مسیر جامع یادگیری CBT</h2></div>
-<p data-fa="مسیر پیشنهادی از مفاهیم پایه تا استدلال بالینی، برنامه‌ریزی درمان و ارزیابی انتقادی شواهد." data-en="A proposed route from core concepts to clinical reasoning, treatment planning, and critical appraisal of evidence.">مسیر پیشنهادی از مفاهیم پایه تا استدلال بالینی، برنامه‌ریزی درمان و ارزیابی انتقادی شواهد.</p></div>
-<div class="paths">
-<div class="path"><b>01 · <span data-fa="مبانی CBT" data-en="CBT foundations">مبانی CBT</span></b><small data-fa="نظریه، اصول و شواهد" data-en="Theory, principles, and evidence">نظریه، اصول و شواهد</small></div>
-<div class="path"><b>02 · <span data-fa="مدل شناختی" data-en="Cognitive model">مدل شناختی</span></b><small data-fa="موقعیت، فکر، هیجان و رفتار" data-en="Situation, thought, emotion, and behavior">موقعیت، فکر، هیجان و رفتار</small></div>
-<div class="path"><b>03 · <span data-fa="ارزیابی" data-en="Assessment">ارزیابی</span></b><small data-fa="مصاحبه و تحلیل عملکردی" data-en="Interview and functional analysis">مصاحبه و تحلیل عملکردی</small></div>
-<div class="path"><b>04 · <span data-fa="افکار و باورها" data-en="Thoughts & beliefs">افکار و باورها</span></b><small data-fa="افکار خودکار و باورها" data-en="Automatic thoughts and beliefs">افکار خودکار و باورها</small></div>
-<div class="path"><b>05 · <span data-fa="بازسازی شناختی" data-en="Cognitive restructuring">بازسازی شناختی</span></b><small data-fa="شواهد و گفت‌وگوی سقراطی" data-en="Evidence and Socratic dialogue">شواهد و گفت‌وگوی سقراطی</small></div>
-<div class="path"><b>06 · <span data-fa="مداخلات رفتاری" data-en="Behavioral interventions">مداخلات رفتاری</span></b><small data-fa="آزمایش رفتاری و مواجهه" data-en="Behavioral experiments and exposure">آزمایش رفتاری و مواجهه</small></div>
-<div class="path"><b>07 · <span data-fa="فرمول‌بندی مورد" data-en="Case formulation">فرمول‌بندی مورد</span></b><small data-fa="زمینه‌سازها و تداوم‌بخش‌ها" data-en="Predisposing and maintaining factors">زمینه‌سازها و تداوم‌بخش‌ها</small></div>
-<div class="path"><b>08 · <span data-fa="برنامه درمان" data-en="Treatment planning">برنامه درمان</span></b><small data-fa="هدف، اولویت و پیامد" data-en="Goals, priorities, and outcomes">هدف، اولویت و پیامد</small></div>
-<div class="path"><b>09 · <span data-fa="کار با اختلالات" data-en="Disorder-focused CBT">کار با اختلالات</span></b><small data-fa="فرمول‌بندی و پروتکل‌ها" data-en="Formulations and protocols">فرمول‌بندی و پروتکل‌ها</small></div>
-<div class="path"><b>10 · <span data-fa="پایش و پیشگیری از عود" data-en="Monitoring & relapse prevention">پایش و پیشگیری از عود</span></b><small data-fa="بازبینی فرضیه و نتایج" data-en="Reviewing hypotheses and outcomes">بازبینی فرضیه و نتایج</small></div>
-<div class="path"><b>11 · <span data-fa="مطالعه موردی" data-en="Case studies">مطالعه موردی</span></b><small data-fa="تمرین استدلال بالینی" data-en="Clinical reasoning p
+<div id="content"></div>
+</main></div>
+<footer id="footer">این وب‌سایت یک محیط آموزشی است و جایگزین ارزیابی یا درمان حرفه‌ای نیست.</footer>
+<script>
+const groups=[
+{id:"Psychology",fa:"شاخه‌های روان‌شناسی",en:"Fields of Psychology",items:[
+["General","روان‌شناسی عمومی","General Psychology"],["Cognitive","روان‌شناسی شناختی","Cognitive Psychology"],["Biological","روان‌شناسی زیستی","Biological Psychology"],["Neuropsychology","عصب‌روان‌شناسی","Neuropsychology"],["Developmental","روان‌شناسی رشد","Developmental Psychology"],["Personality","روان‌شناسی شخصیت","Personality Psychology"],["Social","روان‌شناسی اجتماعی","Social Psychology"],["Clinical","روان‌شناسی بالینی","Clinical Psychology"],["Health","روان‌شناسی سلامت","Health Psychology"],["Educational","روان‌شناسی تربیتی","Educational Psychology"],["Industrial","روان‌شناسی صنعتی و سازمانی","Industrial-Organizational Psychology"],["Psychometrics","روان‌سنجی","Psychometrics"],["Emotion","هیجان و انگیزش","Emotion and Motivation"],["Learning","یادگیری و حافظه","Learning and Memory"]]},
+{id:"Therapy",fa:"رویکردهای درمانی",en:"Therapy Approaches",items:[
+["CBT","درمان شناختی‌رفتاری (CBT)","Cognitive Behavioral Therapy (CBT)"],["Behavior","رفتاردرمانی","Behavior Therapy"],["ACT","درمان مبتنی بر پذیرش و تعهد (ACT)","Acceptance and Commitment Therapy (ACT)"],["DBT","رفتاردرمانی دیالکتیکی (DBT)","Dialectical Behavior Therapy (DBT)"],["Schema","طرحواره‌درمانی","Schema Therapy"],["MBT","درمان مبتنی بر ذهنی‌سازی (MBT)","Mentalization-Based Treatment (MBT)"],["Psychodynamic","روان‌درمانی پویشی","Psychodynamic Therapy"],["Humanistic","درمان‌های انسان‌گرا","Humanistic Therapies"],["Family","خانواده‌درمانی سیستمی","Systemic Family Therapy"],["Couples","زوج‌درمانی","Couples Therapy"],["Trauma","درمان‌های متمرکز بر تروما","Trauma-Focused Therapies"],["Integrative","درمان تلفیقی","Integrative Therapy"]]},
+{id:"CBT",fa:"آموزش تخصصی CBT",en:"CBT Learning Path",items:[
+["CBTFoundations","مبانی و شواهد CBT","Foundations and Evidence"],["CognitiveModel","مدل شناختی","Cognitive Model"],["Assessment","ارزیابی و مصاحبه","Assessment and Interview"],["FunctionalAnalysis","تحلیل کارکردی","Functional Analysis"],["Formulation","صورت‌بندی مورد","Case Formulation"],["ThoughtsBeliefs","افکار خودکار و باورها","Automatic Thoughts and Beliefs"],["Restructuring","بازسازی شناختی","Cognitive Restructuring"],["Experiments","آزمایش رفتاری","Behavioral Experiments"],["Interventions","مداخلات رفتاری","Behavioral Interventions"],["TreatmentPlan","برنامه‌ریزی درمان","Treatment Planning"],["Measurement","سنجش پیامدها","Outcome Measurement"],["Relapse","پیشگیری از عود","Relapse Prevention"]]},
+{id:"Library",fa:"کتابخانه و منابع",en:"Library and Resources",items:[
+["Books","راهنمای کتاب‌ها","Book Guides"],["Papers","مقالات پژوهشی","Research Papers"],["Guidelines","راهنماهای بالینی","Clinical Guidelines"],["Scales","مقیاس‌ها و پرسش‌نامه‌ها","Scales and Questionnaires"],["OpenResources","منابع آموزشی رایگان","Free Learning Resources"]]},
+{id:"Media",fa:"ویدیو و صوت",en:"Audio and Video",items:[
+["Videos","ویدیوهای آموزشی","Educational Videos"],["Podcasts","صوت و پادکست","Audio and Podcasts"],["Lectures","سخنرانی‌ها و دوره‌ها","Lectures and Courses"]]},
+{id:"Research",fa:"پژوهش و تفکر علمی",en:"Research and Scientific Thinking",items:[
+["Methods","روش تحقیق","Research Methods"],["Statistics","آمار","Statistics"],["Evidence","ارزیابی شواهد","Evidence Appraisal"],["MetaAnalysis","مرور نظام‌مند و فراتحلیل","Systematic Review and Meta-analysis"],["Bias","سوگیری‌ها و تفکر نقاد","Bias and Critical Thinking"],["Ethics","اخلاق پژوهش","Research Ethics"]]},
+{id:"Tools",fa:"ابزارهای یادگیری",en:"Learning Tools",items:[
+["Flashcards","فلش‌کارت و مرور فاصله‌دار","Flashcards and Spaced Review"],["Quizzes","آزمون‌های خودسنجی","Self-check Quizzes"],["Planner","برنامه‌ریز مطالعه","Study Planner"],["CasePractice","تمرین صورت‌بندی مورد","Case Formulation Practice"]]},
+{id:"Glossary",fa:"واژه‌نامه دوزبانه",en:"Bilingual Glossary",items:[["Glossary","اصطلاحات فارسی و انگلیسی","Persian-English Terms"]]}
+];
+let lang="fa";
+const descriptions={
+CBT:["درمان شناختی‌رفتاری رویکردی ساختارمند، هدف‌محور و مبتنی بر شواهد است که رابطه میان موقعیت، تفسیر، هیجان و رفتار را بررسی می‌کند.","CBT is a structured, goal-oriented, evidence-based approach examining links among situations, interpretations, emotions, and behavior."],
+Formulation:["صورت‌بندی مورد یک فرضیه کاری و قابل بازبینی درباره عوامل زمینه‌ساز، محرک و تداوم‌بخش مشکلات است؛ نه یک برچسب قطعی.","A case formulation is a revisable working hypothesis about predisposing, precipitating, and maintaining factors—not a definitive label."],
+Assessment:["ارزیابی خوب با پرسش‌های روشن، بررسی زمینه و کارکرد رفتار، و تفکیک واقعیت از تفسیر آغاز می‌شود.","Good assessment uses clear questions, examines context and behavioral function, and separates facts from interpretations."],
+Research:["روش‌شناسی پژوهش کمک می‌کند کیفیت شواهد، محدودیت‌ها، سوگیری‌ها و میزان اطمینان به نتیجه‌ها را ارزیابی کنیم.","Research methods help assess evidence quality, limitations, biases, and confidence in conclusions."],
+Library:["این بخش برای سازمان‌دهی کتاب‌ها، مقاله‌ها، راهنماهای بالینی و منابع آموزشی رایگان طراحی شده است.","This section organizes books, papers, clinical guidelines, and free educational resources."],
+Media:["این بخش برای گردآوری و دسته‌بندی محتوای صوتی و تصویری آموزشی در نظر گرفته شده است.","This section is designed to organize educational audio and video content."]
+};
+const t=(fa,en)=>lang==="fa"?fa:en;
+const itemTitle=i=>lang==="fa"?i[1]:i[2];
+const groupTitle=g=>lang==="fa"?g.fa:g.en;
+function buildNav(){
+const nav=document.getElementById("navigation");nav.innerHTML="";
+groups.forEach((g,idx)=>{
+const wrap=document.createElement("div");wrap.className="navgroup"+(idx===0?" open":"");
+const head=document.createElement("button");head.className="navhead";head.innerHTML=`<span>${groupTitle(g)}</span><span>⌄</span>`;head.onclick=()=>wrap.classList.toggle("open");
+const items=document.createElement("div");items.className="navitems";
+g.items.forEach(it=>{const b=document.createElement("button");b.className="navitem";b.textContent=itemTitle(it);b.dataset.search=(it[1]+" "+it[2]).toLowerCase();b.onclick=()=>openPage(it[0],itemTitle(it));items.appendChild(b)});
+wrap.append(head,items);nav.appendChild(wrap);
+});
+}
+function openPage(id,title){
+const content=document.getElementById("content");
+const desc=descriptions[id]||[t("این صفحه برای گردآوری آموزش‌ها، منابع معتبر و تمرین‌های مرتبط با موضوع طراحی شده است. محتوای تخصصی این بخش در مراحل بعد افزوده می‌شود.","This page will collect learning materials, reliable resources, and exercises for this topic. Detailed content will be added in later stages."),t("This page will be expanded gradually with reliable educational resources.","این صفحه به‌تدریج با منابع آموزشی معتبر تکمیل خواهد شد.")];
+content.innerHTML=`<section class="panel"><button id="backHome">← ${t("بازگشت به صفحه اصلی","Back to Home")}</button><h2>${title}</h2><p>${desc[lang==="fa"?0:1]}</p><div class="tags"><span class="tag">${t("آموزش","Learning")}</span><span class="tag">${t("منابع علمی","Scientific resources")}</span><span class="tag">${t("در حال توسعه","In development")}</span></div><h3>${t("مسیر پیشنهادی استفاده","Suggested use")}</h3><ul><li>${t("مفاهیم پایه را یاد بگیرید.","Study the foundational concepts.")}</li><li>${t("به شواهد و منابع معتبر توجه کنید.","Check the evidence and reliable sources.")}</li><li>${t("دانسته‌ها را با تمرین و مثال ارزیابی کنید.","Test your understanding with practice and examples.")}</li></ul></section>`;
+document.getElementById("backHome").onclick=showHome;document.getElementById("sidebar").classList.remove("show");window.scrollTo({top:0,behavior:"smooth"});
+}
+function showHome(){
+const content=document.getElementById("content");content.innerHTML=`<h2 class="section-title">${t("دسته‌بندی‌های اصلی","Explore the Library")}</h2><div class="cards" id="homeCards"></div>`;
+const cards=document.getElementById("homeCards");
+groups.forEach(g=>{const b=document.createElement("button");b.className="topic";b.innerHTML=`<strong>${groupTitle(g)}</strong><span>${g.items.length} ${t("موضوع","topics")}</span>`;b.onclick=()=>openPage(g.id,groupTitle(g));cards.appendChild(b)});
+}
+function setLanguage(next){
+lang=next;document.documentElement.lang=lang;document.documentElement.dir=lang==="fa"?"rtl":"ltr";
+document.getElementById("brand").firstChild.textContent=t("آزمایشگاه یادگیری روان‌شناسی","Psychology Learning Lab");
+document.getElementById("langToggle").textContent=t("English","فارسی");document.getElementById("homeButton").textContent=t("صفحه اصلی","Home");document.getElementById("menuToggle").textContent=t("☰ فهرست","☰ Menu");
+document.getElementById("search").placeholder=t("جست‌وجو در موضوعات...","Search topics...");
+document.getElementById("heroTitle").textContent=t("آزمایشگاه یادگیری روان‌شناسی","Psychology Learning Lab");
+document.getElementById("heroText").textContent=t("محیطی برای یادگیری ساختارمند روان‌شناسی، شناخت رویکردهای درمانی و دسترسی منظم به منابع علمی معتبر.","A structured space for learning psychology, exploring therapy approaches, and accessing scientific resources.");
+document.querySelector('[data-open="CBT"]').textContent=t("شروع یادگیری CBT","Start learning CBT");document.querySelector('[data-open="Research"]').textContent=t("روش‌شناسی و پژوهش","Research methods");document.querySelector('[data-open="Library"]').textContent=t("کتابخانه منابع","Resource library");
+document.getElementById("footer").textContent=t("این وب‌سایت یک محیط آموزشی است و جایگزین ارزیابی یا درمان حرفه‌ای نیست.","This website is educational and does not replace professional assessment or treatment.");
+buildNav();showHome();
+}
+document.getElementById("langToggle").onclick=()=>setLanguage(lang==="fa"?"en":"fa");
+document.getElementById("homeButton").onclick=showHome;
+document.getElementById("menuToggle").onclick=()=>document.getElementById("sidebar").classList.toggle("show");
+document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openPage(b.dataset.open,b.textContent));
+document.getElementById("search").addEventListener("input",e=>{
+const q=e.target.value.trim().toLowerCase();
+document.querySelectorAll(".navgroup").forEach(g=>{let found=0;g.querySelectorAll(".navitem").forEach(b=>{const ok=!q||b.dataset.search.includes(q);b.style.display=ok?"block":"none";if(ok)found++});g.style.display=found?"block":"none";if(q&&found)g.classList.add("open")});
+});
+buildNav();showHome();
+</script>
+</body>
+</html>
+'''
+p=Path("/mnt/data/psychology-learning-lab-index.html")
+p.write_text(html, encoding="utf-8")
+print(f"فایل ساخته شد: {p}")
+print(f"حجم: {len(html)} نویسه | پایان فایل: {html.strip().endswith('</html>')}")
