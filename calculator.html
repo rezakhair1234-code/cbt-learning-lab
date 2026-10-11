@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17365d">
+  <title>محاسبه‌گر عوارض تابلو</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f2f5f9;
+      color: #202b3c;
+      line-height: 1.9;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 25px auto;
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 5px 22px #00000012;
+    }
+
+    h1 {
+      font-size: 23px;
+      text-align: center;
+      color: #17365d;
+      margin-top: 0;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #65748b;
+      font-size: 13px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 20px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 18px;
+      direction: ltr;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 13px;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .calculate {
+      background: #17365d;
+      color: white;
+    }
+
+    .clear {
+      background: #e9eef5;
+      color: #24364b;
+    }
+
+    .result {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #edf7f0;
+      overflow-wrap: anywhere;
+    }
+
+    .amount {
+      font-size: 25px;
+      font-weight: bold;
+      color: #17683a;
+    }
+
+    .error {
+      display: none;
+      margin-top: 18px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #fff0f0;
+      color: #a52222;
+    }
+
+    .rules {
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 13px;
+      color: #526174;
+    }
+
+    .footer {
+      text-align: center;
+      color: #8290a3;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>محاسبه‌گر عوارض تابلو</h1>
+    <p class="subtitle">محاسبه بر اساس متراژ، ضریب و فی منطقه‌ای</p>
+
+    <label for="area">متراژ تابلو (مترمربع)</label>
+    <input
+      id="area"
+      type="number"
+      min="0.01"
+      max="12"
+      step="any"
+      inputmode="decimal"
+      placeholder="مثلاً 4.5"
+    >
+
+    <button class="calculate" id="calculateBtn" type="button">
+      محاسبه عوارض
+    </button>
+
+    <button class="clear" id="clearBtn" type="button">
+      پاک کردن
+    </button>
+
+    <section class="result" id="result" aria-live="polite">
+      <div>متراژ: <strong id="shownArea"></strong> مترمربع</div>
+      <div>ضریب: <strong id="coefficient"></strong></div>
+      <div>فی منطقه‌ای: <strong>۹۰۸٬۴۷۶ ریال</strong></div>
+      <hr>
+      <div>مبلغ عوارض:</div>
+      <div class="amount" id="amount"></div>
+      <div>ریال</div>
+    </section>
+
+    <div class="error" id="error" role="alert"></div>
+
+    <section class="rules">
+      <strong>ضوابط محاسبه</strong>
+      <ul>
+        <li>متراژ بیشتر از صفر تا ۶ متر: ضریب ۳</li>
+        <li>متراژ بیشتر از ۶ تا ۱۲ متر: ضریب ۶</li>
+        <li>متراژ بیشتر از ۱۲ متر: فعلاً قابل محاسبه نیست.</li>
+      </ul>
+      <div>فرمول: متراژ × ضریب × فی منطقه‌ای</div>
+    </section>
+
+    <div class="footer">Psychology Learning Lab</div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const REGIONAL_FEE = 908476;
+
+    const areaInput = document.getElementById("area");
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+
+    function formatNumber(number) {
+      return number.toLocaleString("fa-IR", {
+        maximumFractionDigits: 2
+      });
+    }
+
+    function calculate() {
+      result.style.display = "none";
+      error.style.display = "none";
+
+      const rawValue = areaInput.value.trim();
+      const area = Number(rawValue);
+
+      if (rawValue === "" || !Number.isFinite(area) || area <= 0) {
+        error.textContent = "لطفاً متراژ معتبر و بزرگ‌تر از صفر وارد کنید.";
+        error.style.display = "block";
+        return;
+      }
+
+      if (area > 12) {
+        error.textContent =
+          "متراژ بیشتر از ۱۲ متر است؛ ضریب این محدوده هنوز تعریف نشده است.";
+        error.style.display = "block";
+        return;
+      }
+
+      const coefficient = area <= 6 ? 3 : 6;
+      const total = area * coefficient * REGIONAL_FEE;
+
+      document.getElementById("shownArea").textContent =
+        formatNumber(area);
+
+      document.getElementById("coefficient").textContent =
+        formatNumber(coefficient);
+
+      document.getElementById("amount").textContent =
+        formatNumber(total);
+
+      result.style.display = "block";
+    }
+
+    document.getElementById("calculateBtn")
+      .addEventListener("click", calculate);
+
+    document.getElementById("clearBtn")
+      .addEventListener("click", function () {
+        areaInput.value = "";
+        result.style.display = "none";
+        error.style.display = "none";
+        areaInput.focus();
+      });
+
+    areaInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") calculate();
+    });
+  </script>
+</body>
+</html>
