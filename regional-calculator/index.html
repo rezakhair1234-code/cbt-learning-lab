@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ماشین حساب فی منطقه‌ای</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#f1f5f9;color:#172b3a;font-family:Tahoma,Arial,sans-serif;line-height:1.9}
+main{max-width:650px;margin:auto}
+header,.card{background:white;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 3px 12px #0000000b}
+header{background:#173b57;color:white}
+h1{font-size:23px;margin:0 0 6px}
+h2{font-size:18px;margin-top:0}
+label{display:block;font-weight:bold;margin:12px 0 5px}
+input,select,button{width:100%;padding:13px;border-radius:10px;font:inherit}
+input,select{border:1px solid #cbd5e1;background:white;color:#172b3a}
+button{border:0;background:#173b57;color:white;font-weight:bold;margin-top:18px;cursor:pointer}
+.result{background:#edf5fa;border-radius:12px;padding:16px}
+.amount{font-size:25px;font-weight:bold;color:#173b57;overflow-wrap:anywhere}
+.row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #d6e2eb;padding:8px 0}
+.row span:first-child{color:#536779}
+.formula{direction:ltr;text-align:center;background:white;padding:12px;border-radius:10px;margin-top:14px;overflow-wrap:anywhere}
+.error{color:#b42318;font-weight:bold}
+small{color:#536779}
+table{width:100%;border-collapse:collapse;text-align:center}
+td,th{border:1px solid #d6e2eb;padding:8px}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>ماشین حساب فی منطقه‌ای</h1>
+<div>محاسبه مبلغ بر اساس متراژ، نوع محل و خیابان</div>
+</header>
+
+<section class="card">
+<h2>اطلاعات محاسبه</h2>
+
+<label for="area">متراژ (مترمربع)</label>
+<input id="area" type="number" min="1" max="50" step="any" value="6" placeholder="مثلاً 6.5">
+<small>متراژ باید بین ۱ تا ۵۰ باشد؛ عدد اعشاری مجاز است.</small>
+
+<label for="kind">نوع محل</label>
+<select id="kind">
+<option value="sign">سردر</option>
+<option value="roof">پشت بام</option>
+</select>
+
+<label for="street">خیابان / فی منطقه‌ای</label>
+<select id="street">
+<option value="bagh">باغ زهرا — ۸۹۰٬۲۳۴ ریال</option>
+<option value="sangi">سنگی — ۸۰۳٬۷۸۲ ریال</option>
+<option value="taleghani">طالقانی — ۵۷۸٬۱۲۳ ریال</option>
+<option value="bahmani">بهمنی — ۷۴۹٬۲۶۹ ریال</option>
+</select>
+
+<button id="calculate" type="button">محاسبه مبلغ</button>
+<p id="error" class="error" role="alert"></p>
+</section>
+
+<section class="card">
+<h2>نتیجه محاسبه</h2>
+<div class="result" aria-live="polite">
+<div>مبلغ نهایی به ریال</div>
+<div class="amount" id="amount">۱۶٬۰۲۴٬۲۱۲</div>
+
+<div class="row"><span>متراژ</span><strong id="outArea">۶ متر</strong></div>
+<div class="row"><span>نوع محل</span><strong id="outKind">سردر</strong></div>
+<div class="row"><span>خیابان</span><strong id="outStreet">باغ زهرا</strong></div>
+<div class="row"><span>فی منطقه‌ای</span><strong id="outFee">۸۹۰٬۲۳۴ ریال</strong></div>
+<div class="row"><span>ضریب اعمال‌شده</span><strong id="outCoef">۳</strong></div>
+<div class="row"><span>بازه ضریب</span><strong id="outRange">۱ تا ۶ متر</strong></div>
+
+<div class="formula" id="formula">6 × 3 × 890234 = 16024212</div>
+</div>
+</section>
+
+<section class="card">
+<h2>جدول ضرایب</h2>
+<table>
+<thead><tr><th>متراژ</th><th>سردر</th><th>پشت‌بام</th></tr></thead>
+<tbody>
+<tr><td>۱ تا ۶ متر</td><td>۳</td><td>۴</td></tr>
+<tr><td>بیشتر از ۶ تا ۱۲ متر</td><td>۶</td><td>۸</td></tr>
+<tr><td>بیشتر از ۱۲ تا ۵۰ متر</td><td>۱۰</td><td>۱۲</td></tr>
+</tbody>
+</table>
+<p><small>در مرزها، ضریب بازه پایین‌تر اعمال می‌شود: ۶ در بازه اول و ۱۲ در بازه دوم قرار می‌گیرد.</small></p>
+</section>
+</main>
+
+<script>
+"use strict";
+
+const fees = {
+  bagh: {name:"باغ زهرا", fee:890234},
+  sangi: {name:"سنگی", fee:803782},
+  taleghani: {name:"طالقانی", fee:578123},
+  bahmani: {name:"بهمنی", fee:749269}
+};
+
+const $ = id => document.getElementById(id);
+
+function fa(number) {
+  return new Intl.NumberFormat("fa-IR", {
+    maximumFractionDigits: 8
+  }).format(number);
+}
+
+function coefficient(area, kind) {
+  let tier;
+
+  if (area <= 6) {
+    tier = 0;
+  } else if (area <= 12) {
+    tier = 1;
+  } else {
+    tier = 2;
+  }
+
+  const values = kind === "sign" ? [3, 6, 10] : [4, 8, 12];
+
+  const ranges = [
+    "۱ تا ۶ متر",
+    "بیشتر از ۶ تا ۱۲ متر",
+    "بیشتر از ۱۲ تا ۵۰ متر"
+  ];
+
+  return {
+    value: values[tier],
+    range: ranges[tier]
+  };
+}
+
+function calculate() {
+  const raw = $("area").value.trim();
+  const area = Number(raw);
+  const kind = $("kind").value;
+  const street = $("street").value;
+
+  $("error").textContent = "";
+
+  if (raw === "" || !Number.isFinite(area) ||
+      area < 1 || area > 50) {
+    $("error").textContent =
+      "متراژ معتبر بین ۱ تا ۵۰ متر وارد کنید.";
+    return;
+  }
+
+  const region = fees[street];
+  const selected = coefficient(area, kind);
+
+  const total = area * selected.value * region.fee;
+
+  $("amount").textContent = fa(total);
+  $("outArea").textContent = fa(area) + " متر";
+  $("outKind").textContent =
+    kind === "sign" ? "سردر" : "پشت‌بام";
+  $("outStreet").textContent = region.name;
+  $("outFee").textContent = fa(region.fee) + " ریال";
+  $("outCoef").textContent = fa(selected.value);
+  $("outRange").textContent = selected.range;
+
+  $("formula").textContent =
+    area + " × " + selected.value + " × " +
+    region.fee + " = " + total + " ریال";
+}
+
+$("calculate").addEventListener("click", calculate);
+$("area").addEventListener("input", calculate);
+$("kind").addEventListener("change", calculate);
+$("street").addEventListener("change", calculate);
+
+calculate();
+</script>
+</body>
+  </html>
+  
