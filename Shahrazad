@@ -1,0 +1,709 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>محاسبه عوارض تابلوها</title>
+
+<style>
+:root {
+  --blue: #123b5d;
+  --light: #f1f5f9;
+  --border: #d5dee8;
+  --text: #172536;
+  --muted: #607184;
+  --green: #e9f7ef;
+  --red: #fff0ef;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  background: var(--light);
+  color: var(--text);
+  line-height: 1.8;
+}
+header {
+  background: linear-gradient(135deg, #123b5d, #17678c);
+  color: white;
+  padding: 25px 16px;
+}
+header h1 { margin: 0; font-size: 25px; }
+header p { margin: 5px 0 0; color: #e2edf7; }
+.container { max-width: 1100px; margin: auto; padding: 16px; }
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 15px #16324b0b;
+}
+h2 { color: var(--blue); font-size: 19px; margin: 0 0 14px; }
+h3 { color: var(--blue); font-size: 16px; margin: 0; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.base-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px; }
+input, select, button { font: inherit; }
+input[type="text"], input[type="number"], select {
+  width: 100%;
+  min-height: 43px;
+  border: 1px solid #bdcbd9;
+  border-radius: 9px;
+  padding: 8px 10px;
+  background: white;
+  color: var(--text);
+}
+input:focus, select:focus {
+  outline: 2px solid #8cc8e9;
+  outline-offset: 1px;
+}
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.primary { background: var(--blue); color: white; }
+.secondary { background: #e7eff6; color: var(--blue); }
+.danger { background: #fff0ef; color: #a52a22; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.hint, .muted { font-size: 12px; color: var(--muted); }
+.sign-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sign-name { max-width: 360px; }
+.years {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.year {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px;
+  background: #fbfdff;
+}
+.year-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.year-head strong { color: var(--blue); }
+.enabled {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.enabled input { width: 18px; height: 18px; }
+.year-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.wide { grid-column: 1 / -1; }
+.result {
+  background: #edf5fb;
+  border: 1px solid #d3e4f1;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 12px;
+}
+.amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--blue);
+  overflow-wrap: anywhere;
+}
+.error {
+  background: var(--red);
+  color: #912820;
+  padding: 9px;
+  border-radius: 8px;
+  margin-top: 9px;
+  font-size: 13px;
+}
+.warning {
+  background: #fff7e5;
+  border: 1px solid #f0d99e;
+  color: #705015;
+  padding: 10px;
+  border-radius: 9px;
+  font-size: 13px;
+  margin-top: 14px;
+}
+.report {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.report summary {
+  cursor: pointer;
+  padding: 10px;
+  background: #f0f5f9;
+  font-weight: bold;
+  color: var(--blue);
+}
+.report-body { padding: 10px; font-size: 13px; overflow-wrap: anywhere; }
+.report-body p { margin: 6px 0; }
+.total {
+  background: var(--green);
+  border: 1px solid #c5e5d2;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 0;
+}
+.total strong { font-size: 24px; color: #145c39; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td {
+  text-align: right;
+  padding: 9px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+th { background: #edf3f8; color: var(--blue); }
+footer { padding: 0 16px 25px; font-size: 12px; color: var(--muted); }
+@media(max-width:700px) {
+  .grid, .base-grid, .years { grid-template-columns: 1fr; }
+  .card { padding: 12px; }
+  header h1 { font-size: 22px; }
+}
+@media print {
+  body { background: white; }
+  .actions, .remove, footer { display: none !important; }
+  .card { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="container" style="padding-top:0;padding-bottom:0">
+    <h1>محاسبه عوارض تابلوها</h1>
+    <p>محاسبه عوارض با تفکیک سال، منطقه، نوع تابلو و مساحت</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>مشخصات واحد صنفی</h2>
+    <div class="grid">
+      <div>
+        <label for="owner">نام واحد صنفی / متصدی</label>
+        <input id="owner" type="text" placeholder="نام واحد صنفی یا متصدی">
+      </div>
+      <div>
+        <label for="defaultRegion">منطقه پیش‌فرض تابلوهای جدید</label>
+        <select id="defaultRegion">
+          <option value="باغ زهرا">باغ زهرا</option>
+          <option value="سنگی">سنگی</option>
+          <option value="بهمنی">بهمنی</option>
+          <option value="طالقانی">طالقانی</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="add">＋ افزودن تابلو</button>
+      <button class="secondary" id="calculate">محاسبه مجدد</button>
+      <button class="secondary" id="print">چاپ گزارش</button>
+      <button class="secondary" id="reset">شروع دوباره</button>
+    </div>
+
+    <div class="warning">
+      قواعد خودکار فعلی فقط برای مساحت بیشتر از صفر تا ۲۴ مترمربع تعریف شده‌اند.
+      برای مساحت بیشتر از ۲۴ مترمربع محاسبه انجام نمی‌شود، حتی اگر ضریب دستی وارد شود.
+      اطلاعات این صفحه در مرورگر پردازش می‌شود و به سامانه شهرداری متصل نیست.
+    </div>
+  </section>
+
+  <div id="signs"></div>
+
+  <section class="card">
+    <h2>خلاصه نهایی محاسبات</h2>
+    <div id="ownerSummary" class="muted">نام واحد صنفی وارد نشده است.</div>
+    <div class="total">
+      جمع کل موارد معتبر:
+      <br>
+      <strong id="grandTotal">۰ ریال</strong>
+      <div id="summaryCount" class="muted"></div>
+    </div>
+    <div id="summaryTable"></div>
+    <p class="muted">
+      این ابزار بر اساس قواعد واردشده ساخته شده است. پیش از استفاده رسمی،
+      ارقام و فرمول‌ها را با مصوبه و تعرفه معتبر تطبیق دهید.
+    </p>
+  </section>
+</main>
+
+<footer class="container">
+  نسخه محلی ماشین‌حساب عوارض تابلوها
+</footer>
+
+<template id="signTemplate">
+  <section class="card sign">
+    <div class="sign-title">
+      <h2 class="sign-heading">تابلو</h2>
+      <input class="sign-name" type="text" placeholder="شرح تابلو؛ اختیاری">
+      <button class="danger remove" type="button">حذف تابلو</button>
+    </div>
+
+    <div class="base-grid">
+      <div>
+        <label>نوع تابلو</label>
+        <select class="type">
+          <option value="storefront">تابلو سردر</option>
+          <option value="rooftop">تابلو پشت‌بام (فی × ۵)</option>
+        </select>
+      </div>
+      <div>
+        <label>روش محاسبه</label>
+        <select class="method">
+          <option value="main">عوارض تابلو</option>
+          <option value="sticker">عوارض سالیانه برچسب</option>
+        </select>
+      </div>
+      <div>
+        <label>منطقه این تابلو</label>
+        <select class="region">
+          <option value="باغ زهرا">باغ زهرا</option>
+          <option value="سنگی">سنگی</option>
+          <option value="بهمنی">بهمنی</option>
+          <option value="طالقانی">طالقانی</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="hint" style="margin-top:12px">
+      مساحت هر سال مستقل است. ضریب و فی منطقه‌ای را خالی بگذارید تا مقدار خودکار اعمال شود؛
+      واردکردن عدد، مقدار همان سال را دستی می‌کند.
+    </div>
+
+    <div class="years"></div>
+  </section>
+</template>
+
+<script>
+"use strict";
+
+const YEARS = [1402, 1403, 1404, 1405];
+
+const FEES = {
+  "باغ زهرا": 890457,
+  "سنگی": 780245,
+  "بهمنی": 652490,
+  "طالقانی": 568002
+};
+
+const COEFFICIENTS = {
+  1402: { low: 3, high: 6 },
+  1403: { low: 4, high: 7 },
+  1404: { low: 5, high: 8 },
+  1405: { low: 6, high: 9 }
+};
+
+const fmt = new Intl.NumberFormat("fa-IR", {
+  maximumFractionDigits: 4
+});
+
+function numberText(n) {
+  return fmt.format(n);
+}
+
+function rial(n) {
+  return numberText(n) + " ریال";
+}
+
+function readNumber(value) {
+  if (value === null || value === undefined || String(value).trim() === "") {
+    return null;
+  }
+
+  let s = String(value)
+    .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+    .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+    .replace(/[٬,]/g, "")
+    .trim();
+
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[ch]);
+}
+
+function autoCoefficient(year, area) {
+  if (!(area > 0) || area > 24) return null;
+
+  // از کمتر از یک متر تا دقیقاً ۶ متر: ضریب اول
+  // بیشتر از ۶ تا دقیقاً ۲۴ متر: ضریب دوم
+  return area <= 6
+    ? COEFFICIENTS[year].low
+    : COEFFICIENTS[year].high;
+}
+
+const signs = document.getElementById("signs");
+let nextId = 1;
+
+function createYear(year) {
+  const box = document.createElement("div");
+  box.className = "year";
+  box.dataset.year = year;
+
+  // به‌صورت پیش‌فرض سال ۱۴۰۵ فعال است.
+  const checked = year === 1405 ? "checked" : "";
+
+  box.innerHTML = `
+    <div class="year-head">
+      <strong>سال ${numberText(year)}</strong>
+      <label class="enabled">
+        <input class="enabled-input" type="checkbox" ${checked}>
+        محاسبه این سال
+      </label>
+    </div>
+
+    <div class="year-fields">
+      <div>
+        <label>مساحت (مترمربع)</label>
+        <input class="area" type="number" min="0" step="any"
+          inputmode="decimal" placeholder="مثلاً ۵">
+      </div>
+
+      <div class="coefficient-field">
+        <label class="coefficient-label">ضریب N؛ خالی = خودکار</label>
+        <input class="coefficient" type="number" min="0" step="any"
+          inputmode="decimal" placeholder="خودکار از جدول">
+        <div class="hint coefficient-hint">بر اساس سال و مساحت</div>
+      </div>
+
+      <div class="wide">
+        <label>فی منطقه‌ای P (ریال)؛ خالی = خودکار</label>
+        <input class="fee" type="number" min="0" step="any"
+          inputmode="decimal" placeholder="از جدول منطقه">
+        <div class="hint">عدد دستی جایگزین فی منطقه‌ای جدول می‌شود.</div>
+      </div>
+    </div>
+
+    <div class="result">
+      <div class="muted">نتیجه این سال</div>
+      <div class="amount year-amount">—</div>
+      <div class="muted year-status">برای محاسبه، سال را فعال و مساحت را وارد کنید.</div>
+    </div>
+
+    <div class="error year-error" hidden></div>
+
+    <details class="report">
+      <summary>گزارش فرمول و مقادیر</summary>
+      <div class="report-body year-report">
+        پس از محاسبه، گزارش اینجا نمایش داده می‌شود.
+      </div>
+    </details>
+  `;
+
+  return box;
+}
+
+function updateMethod(card) {
+  const sticker = card.querySelector(".method").value === "sticker";
+
+  card.querySelectorAll(".year").forEach(box => {
+    const input = box.querySelector(".coefficient");
+    const label = box.querySelector(".coefficient-label");
+    const hint = box.querySelector(".coefficient-hint");
+
+    if (sticker) {
+      input.value = "";
+      input.disabled = true;
+      input.placeholder = "ثابت: ۱۰";
+      label.textContent = "ضریب N";
+      hint.textContent = "در روش برچسب، ضریب همیشه ۱۰ است.";
+    } else {
+      input.disabled = false;
+      input.placeholder = "خودکار از جدول";
+      label.textContent = "ضریب N؛ خالی = خودکار";
+      hint.textContent = "ورود عدد دستی، ضریب خودکار این سال را جایگزین می‌کند.";
+    }
+  });
+}
+
+function addSign() {
+  const fragment = document.getElementById("signTemplate").content.cloneNode(true);
+  const card = fragment.querySelector(".sign");
+  const id = nextId++;
+
+  card.dataset.id = id;
+  card.querySelector(".sign-heading").textContent =
+    "تابلو " + numberText(id);
+
+  card.querySelector(".region").value =
+    document.getElementById("defaultRegion").value;
+
+  const yearContainer = card.querySelector(".years");
+  YEARS.forEach(year => yearContainer.appendChild(createYear(year)));
+
+  signs.appendChild(fragment);
+
+  const added = signs.querySelector('.sign[data-id="' + id + '"]');
+
+  added.querySelector(".remove").addEventListener("click", () => {
+    if (signs.querySelectorAll(".sign").length === 1) {
+      alert("حداقل یک تابلو باید باقی بماند.");
+      return;
+    }
+    added.remove();
+    calculateAll();
+  });
+
+  added.querySelector(".method").addEventListener("change", () => {
+    updateMethod(added);
+    calculateAll();
+  });
+
+  added.querySelectorAll(
+    ".type, .region, .area, .coefficient, .fee, .enabled-input, .sign-name"
+  ).forEach(el => {
+    el.addEventListener("input", calculateAll);
+    el.addEventListener("change", calculateAll);
+  });
+
+  updateMethod(added);
+  calculateAll();
+}
+
+function showError(box, message) {
+  const el = box.querySelector(".year-error");
+  el.textContent = message || "";
+  el.hidden = !message;
+}
+
+function report(box, lines) {
+  box.querySelector(".year-report").innerHTML =
+    lines.map(line => "<p>" + line + "</p>").join("");
+}
+
+function calculateYear(card, box) {
+  const year = Number(box.dataset.year);
+  const enabled = box.querySelector(".enabled-input").checked;
+  const amountEl = box.querySelector(".year-amount");
+  const statusEl = box.querySelector(".year-status");
+  const method = card.querySelector(".method").value;
+  const type = card.querySelector(".type").value;
+  const region = card.querySelector(".region").value;
+  const signName =
+    card.querySelector(".sign-name").value.trim() ||
+    card.querySelector(".sign-heading").textContent;
+
+  if (!enabled) {
+    amountEl.textContent = "—";
+    statusEl.textContent = "این سال در جمع کل وارد نشده است.";
+    report(box, ["این سال انتخاب نشده است."]);
+    showError(box, "");
+    return null;
+  }
+
+  const area = readNumber(box.querySelector(".area").value);
+  const manualN = method === "sticker"
+    ? null
+    : readNumber(box.querySelector(".coefficient").value);
+  const manualP = readNumber(box.querySelector(".fee").value);
+
+  if (area === null || Number.isNaN(area) || area <= 0) {
+    amountEl.textContent = "—";
+    statusEl.textContent = "مساحت معتبر وارد کنید.";
+    report(box, ["مساحت باید عددی بزرگ‌تر از صفر باشد."]);
+    showError(box, "مساحت معتبر وارد نشده است.");
+    return { valid: false, signName, year };
+  }
+
+  // طبق قاعده فعلی، بالاتر از ۲۴ متر اصلاً محاسبه نمی‌شود.
+  if (area > 24) {
+    amountEl.textContent = "محاسبه نشد";
+    statusEl.textContent = "ضریب این مساحت تعریف نشده است.";
+    report(box, [
+      "مساحت واردشده: <b>" + numberText(area) + " مترمربع</b>",
+      "قاعده فعلی فقط تا ۲۴ مترمربع ضریب دارد.",
+      "برای این مساحت مبلغی محاسبه نشده و در جمع کل وارد نمی‌شود."
+    ]);
+    showError(box, "مساحت بیشتر از ۲۴ مترمربع است؛ ضریب تعریف نشده است.");
+    return { valid: false, signName, year };
+  }
+
+  if (Number.isNaN(manualN) || (manualN !== null && manualN < 0)) {
+    amountEl.textContent = "—";
+    statusEl.textContent = "ضریب دستی نامعتبر است.";
+    showError(box, "ضریب دستی باید عددی صفر یا بزرگ‌تر باشد.");
+    report(box, ["ضریب دستی معتبر نیست."]);
+    return { valid: false, signName, year };
+  }
+
+  if (Number.isNaN(manualP) || (manualP !== null && manualP < 0)) {
+    amountEl.textContent = "—";
+    statusEl.textContent = "فی منطقه‌ای دستی نامعتبر است.";
+    showError(box, "فی منطقه‌ای دستی باید عددی صفر یا بزرگ‌تر باشد.");
+    report(box, ["فی منطقه‌ای دستی معتبر نیست."]);
+    return { valid: false, signName, year };
+  }
+
+  const baseP = manualP === null ? FEES[region] : manualP;
+  const pSource = manualP === null ? "جدول منطقه" : "دستی";
+
+  const N = method === "sticker"
+    ? 10
+    : (manualN === null ? autoCoefficient(year, area) : manualN);
+
+  const nSource = method === "sticker"
+    ? "ثابت روش برچسب"
+    : (manualN === null ? "جدول ضرایب" : "دستی");
+
+  if (N === null) {
+    amountEl.textContent = "محاسبه نشد";
+    statusEl.textContent = "ضریب خودکار موجود نیست.";
+    report(box, ["برای این مساحت ضریب خودکار تعریف نشده است."]);
+    showError(box, "ضریب تعریف نشده است.");
+    return { valid: false, signName, year };
+  }
+
+  // فقط نوع پشت‌بام باعث ضرب فی در ۵ می‌شود.
+  const roofMultiplier = type === "rooftop" ? 5 : 1;
+  const effectiveP = baseP * roofMultiplier;
+  const amount = area * N * effectiveP;
+
+  const typeLabel = type === "rooftop" ? "پشت‌بام" : "سردر";
+  const methodLabel = method === "sticker"
+    ? "عوارض سالیانه برچسب"
+    : "عوارض تابلو";
+  const formula = method === "sticker" ? "S × ۱۰ × P" : "S × N × P";
+
+  const lines = [
+    "<b>تابلو:</b> " + escapeHTML(signName),
+    "<b>سال:</b> " + numberText(year),
+    "<b>نوع تابلو:</b> " + typeLabel,
+    "<b>روش محاسبه:</b> " + methodLabel,
+    "<b>S، مساحت:</b> " + numberText(area) + " مترمربع",
+    "<b>N، ضریب:</b> " + numberText(N) + "؛ منبع: " + nSource,
+    "<b>P، فی منطقه‌ای پایه:</b> " + rial(baseP) +
+      "؛ منطقه: " + escapeHTML(region) + "؛ منبع: " + pSource,
+    "<b>محاسبه فی مؤثر:</b> " + rial(baseP) +
+      " × " + numberText(roofMultiplier) + " = " + rial(effectiveP),
+    "<b>فرمول:</b> " + formula,
+    "<b>جایگذاری اعداد:</b> " + numberText(area) + " × " +
+      numberText(N) + " × " + numberText(effectiveP) +
+      " = " + rial(amount),
+    "<b>مبلغ نهایی:</b> " + rial(amount)
+  ];
+
+  amountEl.textContent = rial(amount);
+  statusEl.textContent =
+    "ضریب: " + nSource + "؛ فی منطقه‌ای: " + pSource + ".";
+  report(box, lines);
+  showError(box, "");
+
+  return {
+    valid: true, signName, year, amount, area, N,
+    effectiveP, region, type, method
+  };
+}
+
+function calculateAll() {
+  const owner = document.getElementById("owner").value.trim();
+  document.getElementById("ownerSummary").textContent = owner
+    ? "نام واحد صنفی / متصدی: " + owner
+    : "نام واحد صنفی وارد نشده است.";
+
+  const results = [];
+
+  signs.querySelectorAll(".sign").forEach(card => {
+    card.querySelectorAll(".year").forEach(box => {
+      const result = calculateYear(card, box);
+      if (result) results.push(result);
+    });
+  });
+
+  const valid = results.filter(x => x.valid);
+  const invalid = results.filter(x => !x.valid);
+  const total = valid.reduce((sum, x) => sum + x.amount, 0);
+
+  document.getElementById("grandTotal").textContent = rial(total);
+  document.getElementById("summaryCount").textContent =
+    numberText(valid.length) + " محاسبه معتبر؛ " +
+    numberText(invalid.length) + " مورد نامعتبر یا ناقص.";
+
+  const table = document.getElementById("summaryTable");
+
+  if (!valid.length) {
+    table.innerHTML =
+      '<p class="muted">برای نمایش جمع، سال را فعال و مساحت معتبر وارد کنید.</p>';
+    return;
+  }
+
+  const rows = valid.map(x => `
+    <tr>
+      <td>${escapeHTML(x.signName)}</td>
+      <td>${numberText(x.year)}</td>
+      <td>${x.type === "rooftop" ? "پشت‌بام" : "سردر"}</td>
+      <td>${numberText(x.area)}</td>
+      <td>${numberText(x.N)}</td>
+      <td>${rial(x.effectiveP)}</td>
+      <td><b>${rial(x.amount)}</b></td>
+    </tr>
+  `).join("");
+
+  table.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>تابلو</th><th>سال</th><th>نوع</th>
+            <th>مساحت</th><th>ضریب N</th><th>فی مؤثر P</th><th>مبلغ</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr><th colspan="6">جمع کل موارد معتبر</th><th>${rial(total)}</th></tr>
+        </tfoot>
+      </table>
+    </div>
+  `;
+}
+
+document.getElementById("add").addEventListener("click", addSign);
+document.getElementById("calculate").addEventListener("click", calculateAll);
+document.getElementById("owner").addEventListener("input", calculateAll);
+
+document.getElementById("print").addEventListener("click", () => {
+  calculateAll();});
+
+addSign();
+</script>
+</body>
+</html>
