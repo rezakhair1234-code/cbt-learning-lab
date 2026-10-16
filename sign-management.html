@@ -1,0 +1,728 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سامانه مدیریت تابلوهای شهری</title>
+<style>
+:root{
+ --bg:#f3f6fa;--card:#fff;--text:#172b4d;--muted:#68778d;
+ --line:#e1e7ef;--blue:#2855a6;--blue2:#eaf1ff;
+ --green:#16835b;--greenbg:#e6f6ef;--red:#c34343;
+ --redbg:#fff0ef;--orange:#b86b0c;--orangebg:#fff3df;
+ --purple:#7354b4;--shadow:0 3px 14px #1831530a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+ font-family:Tahoma,"Segoe UI",Arial,sans-serif;font-size:13px;line-height:1.9}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.topbar{background:#172e55;color:white;padding:19px 22px}
+.top-inner{max-width:1500px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-size:20px;font-weight:bold}
+.brand small{display:block;font-size:11px;color:#cfdaed;font-weight:normal}
+.demo{background:#ffedc7;color:#754b00;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:bold}
+.layout{max-width:1500px;margin:auto;padding:18px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px}
+.sidebar{background:white;border:1px solid var(--line);border-radius:14px;padding:12px;height:max-content;position:sticky;top:12px}
+.navbtn{display:block;width:100%;text-align:right;border:0;background:white;color:#455772;padding:11px;border-radius:8px;margin:3px 0}
+.navbtn:hover,.navbtn.active{background:var(--blue2);color:var(--blue);font-weight:bold}
+.navtitle{font-size:11px;color:var(--muted);padding:10px 10px 2px}
+main{min-width:0}
+.page{display:none}.page.active{display:block}
+.pagehead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+h1{font-size:21px;margin:0}h2{font-size:15px;margin:0 0 12px}h3{font-size:13px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:11px;margin-top:3px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow);min-width:0}
+.metric{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.metric .label{color:var(--muted);font-size:12px}
+.metric .number{font-size:27px;font-weight:bold;line-height:1.5;margin-top:5px}
+.metric .icon{width:40px;height:40px;display:grid;place-items:center;background:var(--blue2);color:var(--blue);border-radius:11px;font-size:19px}
+.green{color:var(--green)!important}.red{color:var(--red)!important}.orange{color:var(--orange)!important}
+.muted{color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);border-radius:8px;background:white;color:var(--text);padding:8px 12px}
+.btn.primary{background:var(--blue);color:white;border-color:var(--blue)}
+.btn.greenbtn{background:var(--green);color:white;border-color:var(--green)}
+.btn.danger{color:var(--red);border-color:#f1caca}
+.btn.small{padding:4px 8px;font-size:11px}
+.btn:hover{filter:brightness(.97)}
+.notice{padding:10px 12px;border-radius:9px;background:var(--orangebg);color:#7e5108;margin-bottom:14px;font-size:12px}
+.info{padding:10px 12px;border-radius:9px;background:var(--blue2);color:var(--blue);margin-bottom:14px;font-size:12px}
+.section{margin-top:15px}
+.barlist{display:flex;flex-direction:column;gap:13px}
+.baritem{display:grid;grid-template-columns:78px minmax(0,1fr) 65px;gap:8px;align-items:center}
+.barname{font-size:12px;white-space:nowrap}
+.track{height:12px;background:#edf1f6;border-radius:10px;overflow:hidden;display:flex}
+.fill{height:100%;transition:width .2s}
+.fill.blue{background:#376ac4}.fill.green{background:#1b9b70}.fill.red{background:#dc6863}.fill.orange{background:#e5a03c}
+.barvalue{text-align:left;font-size:11px;color:var(--muted)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:12px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:4px}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+th{font-size:11px;color:var(--muted);background:#f8fafd;white-space:nowrap}
+td{font-size:12px}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:9px}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;white-space:nowrap;background:#edf1f6;color:#53647c}
+.badge.green{background:var(--greenbg);color:var(--green)!important}
+.badge.red{background:var(--redbg);color:var(--red)!important}
+.badge.orange{background:var(--orangebg);color:var(--orange)!important}
+.badge.blue{background:var(--blue2);color:var(--blue)!important}
+.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:11px;color:#53647c;font-weight:bold}
+input,select,textarea{width:100%;border:1px solid #d7dfeb;border-radius:8px;padding:9px;background:white;color:var(--text);min-width:0}
+textarea{resize:vertical;min-height:76px}
+input:focus,select:focus,textarea:focus{outline:2px solid #c6d8ff;border-color:#6e96df}
+.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.full{grid-column:1/-1}
+.hidden{display:none!important}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.thumb{width:43px;height:38px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+.empty{text-align:center;color:var(--muted);padding:24px}
+.task{border:1px solid var(--line);border-radius:9px;padding:12px;margin-top:9px}
+.tasktitle{font-weight:bold;font-size:13px}
+.taskmeta{font-size:11px;color:var(--muted);margin:4px 0}
+.taskdesc{font-size:12px}
+.task.done{opacity:.7}
+.progress{height:9px;border-radius:9px;background:#edf1f6;overflow:hidden;margin:7px 0}
+.progress span{display:block;height:100%;background:var(--green)}
+.imagegrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:10px}
+.imageitem{border:1px solid var(--line);border-radius:8px;padding:6px}
+.imageitem img{width:100%;height:95px;object-fit:cover;border-radius:5px}
+.imageitem small{display:block;overflow-wrap:anywhere}
+.footer{text-align:center;color:var(--muted);font-size:10px;padding:18px}
+@media(max-width:950px){
+ .layout{grid-template-columns:1fr;padding:10px}
+ .sidebar{position:static;display:flex;overflow:auto;gap:4px;padding:7px}
+ .navtitle{display:none}.navbtn{white-space:nowrap;width:auto;margin:0;padding:8px 10px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid2{grid-template-columns:1fr}
+ .formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+ .topbar{padding:14px}.brand{font-size:17px}
+ .grid{gap:8px}.card{padding:12px}
+ .metric .number{font-size:22px}.metric .icon{width:32px;height:32px}
+ .formgrid,.filters{grid-template-columns:1fr}
+ .imagegrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ h1{font-size:18px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="top-inner">
+  <div class="brand">سامانه مدیریت تابلوهای شهری
+   <small>داشبورد نظارت، پیگیری اخطارها و وضعیت عوارض</small>
+  </div>
+  <span class="demo">محیط نمایشی ـ اطلاعات فرضی</span>
+ </div>
+</header>
+
+<div class="layout">
+ <aside class="sidebar">
+  <div class="navtitle">مدیریت سامانه</div>
+  <button class="navbtn active" data-page="dashboard">▦ داشبورد مدیریتی</button>
+  <button class="navbtn" data-page="signs">▤ فهرست تابلوها</button>
+  <button class="navbtn" data-page="editor">＋ ثبت تابلو / ویرایش</button>
+  <button class="navbtn" data-page="tasks">☑ دستور کار مدیر</button>
+  <button class="navbtn" data-page="reports">▥ گزارش‌ها و تحلیل</button>
+  <button class="navbtn" data-page="daily">◷ گزارش روزانه</button>
+  <div class="navtitle">اطلاعات و تنظیمات</div>
+  <button class="navbtn" data-page="help">ⓘ راهنمای استفاده</button>
+  <button class="navbtn" id="resetBtn">↻ بازنشانی داده‌های فرضی</button>
+ </aside>
+
+ <main>
+  <section class="page active" id="page-dashboard">
+   <div class="pagehead">
+    <div><h1>داشبورد مدیریتی</h1><div class="sub">نمای کلی عملکرد خیابان‌ها و وضعیت پیگیری تابلوها</div></div>
+    <button class="btn primary" onclick="openNewSign()">＋ ثبت تابلو جدید</button>
+   </div>
+   <div class="notice">تمام اعداد و پرونده‌های این صفحه فرضی هستند و برای نمایش عملکرد سامانه ساخته شده‌اند؛ داده واقعی شهرداری نیستند.</div>
+   <div class="grid" id="metrics"></div>
+   <div class="grid2">
+    <div class="card">
+     <div class="spread"><h2>مقایسه وضعیت خیابان‌ها</h2><span class="badge blue">تعداد تابلو</span></div>
+     <div class="legend"><span><i class="dot" style="background:#1b9b70"></i>تسویه‌شده</span><span><i class="dot" style="background:#dc6863"></i>تسویه‌نشده / پرداخت جزئی</span></div>
+     <div class="barlist" id="streetBars"></div>
+    </div>
+    <div class="card">
+     <h2>وضعیت اخطارها</h2>
+     <div class="sub">تعداد رویدادهای اخطار ثبت‌شده؛ نه تعداد تابلوهای منحصربه‌فرد</div>
+     <div class="barlist" id="warningBars" style="margin-top:18px"></div>
+     <div class="section">
+      <div class="spread"><span>تابلوهای دارای حداقل یک اخطار</span><b id="warnedCount">۰</b></div>
+      <div class="spread"><span>تابلوهای بدون اخطار</span><b id="noWarnCount">۰</b></div>
+     </div>
+    </div>
+   </div>
+   <div class="grid2">
+    <div class="card">
+     <h2>سناریوی فرضی پایان ماه</h2>
+     <div class="sub">برآورد ساده بر اساس میانگین تسویه‌های ۷ روز اخیر در داده‌های نمونه</div>
+     <div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px">
+      <div><div class="muted">تسویه فعلی</div><div class="number" id="forecastCurrent">۰</div></div>
+      <div><div class="muted">سناریوی پایان ماه</div><div class="number green" id="forecastEnd">۰</div></div>
+     </div>
+     <div class="progress"><span id="forecastProgress" style="width:0%"></span></div>
+     <div id="forecastNote" class="sub"></div>
+    </div>
+    <div class="card">
+     <h2>پنج مورد نیازمند پیگیری</h2>
+     <div id="followups"></div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="spread"><h2>خلاصه عملکرد خیابان‌ها</h2><button class="btn small" onclick="showPage('reports')">گزارش کامل</button></div>
+    <div class="tablewrap"><table><thead><tr><th>خیابان</th><th>کل تابلو</th><th>تسویه‌شده</th><th>باقی‌مانده</th><th>درصد تسویه</th><th>عملیات</th></tr></thead><tbody id="summaryTable"></tbody></table></div>
+   </div>
+  </section>
+
+  <section class="page" id="page-signs">
+   <div class="pagehead"><div><h1>فهرست تابلوها</h1><div class="sub">جست‌وجو، فیلتر و دسترسی به پرونده هر تابلو</div></div><button class="btn primary" onclick="openNewSign()">＋ ثبت تابلو</button></div>
+   <div class="card">
+    <div class="filters">
+     <div class="field"><label>جست‌وجو</label><input id="searchText" placeholder="شناسه، نشانی یا نام مالک..."></div>
+     <div class="field"><label>خیابان</label><select id="filterStreet"><option value="">همه خیابان‌ها</option></select></div>
+     <div class="field"><label>وضعیت مالی</label><select id="filterFinance"><option value="">همه وضعیت‌ها</option><option value="settled">تسویه‌شده</option><option value="unsettled">تسویه‌نشده</option><option value="partial">پرداخت جزئی</option></select></div>
+     <div class="field"><label>مرحله اخطار</label><select id="filterWarning"><option value="">همه مراحل</option><option value="0">بدون اخطار</option><option value="1">اخطار اول</option><option value="2">اخطار دوم</option><option value="3">اخطار سوم</option></select></div>
+    </div>
+    <div class="spread" style="margin-bottom:10px"><span class="muted" id="tableCount"></span><button class="btn small" onclick="clearFilters()">پاک‌کردن فیلترها</button></div>
+    <div class="tablewrap"><table><thead><tr><th>شناسه</th><th>خیابان / نشانی</th><th>مالک / واحد</th><th>مساحت</th><th>وضعیت مالی</th><th>اخطار</th><th>تصویر</th><th>عملیات</th></tr></thead><tbody id="signRows"></tbody></table></div>
+    <div class="sub" style="margin-top:8px">برای سرعت، حداکثر ۱۰۰ ردیف اول نمایش داده می‌شود؛ فیلترها و جست‌وجو روی کل داده‌ها اعمال می‌شوند.</div>
+   </div>
+  </section>
+
+  <section class="page" id="page-editor">
+   <div class="pagehead"><div><h1 id="formHeading">ثبت تابلوی جدید</h1><div class="sub">فیلدها را وارد کن و در پایان ثبت را بزن.</div></div><button class="btn" onclick="showPage('signs')">بازگشت به فهرست</button></div>
+   <div class="info">شناسه به‌صورت خودکار پیشنهاد می‌شود. در ویرایش پرونده، ثبت مرحله اخطار جدید به معنی افزودن رویداد جدید است؛ سابقه اخطارهای قبلی حفظ می‌شود.</div>
+   <form class="card" id="signForm">
+    <input type="hidden" id="editId">
+    <h2>۱. مشخصات تابلو</h2>
+    <div class="formgrid">
+     <div class="field"><label>شناسه تابلو</label><input id="fId" required></div>
+     <div class="field"><label>خیابان</label><select id="fStreet" required></select></div>
+     <div class="field"><label>نام مالک / واحد صنفی</label><input id="fOwner" required placeholder="نام واحد یا مالک"></div>
+     <div class="field"><label>نشانی دقیق</label><input id="fAddress" required placeholder="کوچه، پلاک یا نشانی"></div>
+     <div class="field"><label>مساحت تابلو (مترمربع)</label><input id="fArea" type="number" min="0.1" step="0.1" required></div>
+     <div class="field"><label>نوع تابلو</label><select id="fType"><option>سردر</option><option>پشت‌بام</option><option>دیوارکوب</option><option>استند</option><option>سایر</option></select></div>
+     <div class="field"><label>وضعیت مجوز</label><select id="fPermit"><option value="unknown">بررسی‌نشده</option><option value="licensed">دارای مجوز</option><option value="unlicensed">فاقد مجوز</option><option value="expired">مجوز منقضی</option></select></div>
+     <div class="field"><label>تاریخ شناسایی</label><input id="fDate" type="date"></div>
+     <div class="field"><label>توضیحات</label><input id="fNotes" placeholder="توضیح کوتاه"></div>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+    <h2>۲. وضعیت مالی</h2>
+    <div class="formgrid">
+     <div class="field"><label>وضعیت پرداخت</label><select id="fFinance"><option value="unsettled">تسویه‌نشده</option><option value="partial">پرداخت جزئی</option><option value="settled">تسویه‌شده</option></select></div>
+     <div class="field"><label>مبلغ کل عوارض (ریال)</label><input id="fDue" type="number" min="0" step="1" value="10000000"></div>
+     <div class="field"><label>مبلغ پرداخت‌شده (ریال)</label><input id="fPaid" type="number" min="0" step="1" value="0"></div>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+    <h2>۳. اخطار و ابلاغ</h2>
+    <div class="formgrid">
+     <div class="field"><label>مرحله فعلی اخطار</label><select id="fWarning"><option value="0">بدون اخطار جدید</option><option value="1">اخطار اول</option><option value="2">اخطار دوم</option><option value="3">اخطار سوم</option></select></div>
+     <div class="field"><label>وضعیت ابلاغ اخطار جدید</label><select id="fServed"><option value="no">ابلاغ نشده</option><option value="yes">ابلاغ شده</option></select></div>
+     <div class="field"><label>تاریخ اخطار / ابلاغ</label><input id="fWarningDate" type="date"></div>
+     <div class="field"><label>وضعیت رفع تخلف</label><select id="fViolation"><option value="active">تخلف همچنان برقرار است</option><option value="fixed">رفع تخلف شده</option><option value="review">نیازمند بررسی</option></select></div>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+    <h2>۴. تصاویر پرونده</h2>
+    <div class="sub">تصاویر انتخاب‌شده فقط در حافظه همین صفحه هستند؛ با تازه‌سازی صفحه حذف می‌شوند.</div>
+    <div class="formgrid" style="margin-top:10px">
+     <div class="field"><label>تصویر تابلو / محل نصب</label><input id="fPhotos" type="file" accept="image/*" multiple></div>
+     <div class="field"><label>عنوان تصاویر جدید (اختیاری)</label><input id="fPhotoCaption" placeholder="مثلاً تصویر محل نصب"></div>
+     <div class="field"><label>تصاویر فعلی پرونده</label><div id="currentPhotos" class="sub">هنوز تصویری ثبت نشده است.</div></div>
+    </div>
+    <div class="formactions">
+     <button type="submit" class="btn primary">ثبت اطلاعات</button>
+     <button type="button" class="btn" onclick="resetSignForm()">پاک‌کردن فرم</button>
+     <button type="button" class="btn" onclick="showPage('signs')">انصراف</button>
+    </div>
+   </form>
+  </section>
+
+  <section class="page" id="page-tasks">
+   <div class="pagehead"><div><h1>دستور کار مدیر</h1><div class="sub">تعریف مأموریت، تعیین اولویت و پیگیری نتیجه</div></div><button class="btn primary" onclick="document.getElementById('taskFormCard').scrollIntoView({behavior:'smooth'})">＋ دستور کار جدید</button></div>
+   <div class="grid" id="taskMetrics"></div>
+   <div class="grid2">
+    <div class="card">
+     <h2>ثبت دستور کار</h2>
+     <form id="taskForm">
+      <div class="formgrid">
+       <div class="field full"><label>عنوان دستور کار</label><input id="tTitle" required placeholder="مثلاً بررسی تابلوهای بزرگ خیابان سنگی"></div>
+       <div class="field full"><label>شرح اقدام مورد انتظار</label><textarea id="tDesc" required placeholder="اقدام دقیق و نتیجه مورد انتظار را بنویس..."></textarea></div>
+       <div class="field"><label>خیابان مرتبط</label><select id="tStreet"></select></div>
+       <div class="field"><label>اولویت</label><select id="tPriority"><option value="high">بالا</option><option value="medium" selected>متوسط</option><option value="low">پایین</option></select></div>
+       <div class="field"><label>مهلت انجام</label><input id="tDeadline" type="date" required></div>
+      </div>
+      <div class="formactions"><button class="btn primary" type="submit">ثبت دستور کار</button></div>
+     </form>
+    </div>
+    <div class="card" id="taskFormCard">
+     <h2>وضعیت دستور کارها</h2>
+     <div id="taskProgress"></div>
+    </div>
+   </div>
+   <div class="card"><div class="spread"><h2>فهرست دستور کارها</h2><select id="taskFilter" style="max-width:190px"><option value="">همه وضعیت‌ها</option><option value="new">جدید</option><option value="doing">در حال انجام</option><option value="done">تکمیل‌شده</option></select></div><div id="taskList"></div></div>
+  </section>
+
+  <section class="page" id="page-reports">
+   <div class="pagehead"><div><h1>گزارش‌ها و تحلیل</h1><div class="sub">گزارش‌های پویا بر مبنای اطلاعات فعلی سامانه</div></div><button class="btn" onclick="downloadCSV()">دریافت خروجی CSV</button></div>
+   <div class="grid" id="reportMetrics"></div>
+   <div class="grid2">
+    <div class="card"><h2>طبقه‌بندی مساحت تابلوها</h2><div class="sub">کمتر از ۶، از ۶ تا ۲۴ شامل مرزها، و بیشتر از ۲۴ مترمربع</div><div id="areaBars" class="barlist" style="margin-top:18px"></div></div>
+    <div class="card"><h2>رتبه‌بندی خیابان‌ها بر اساس باقی‌مانده مالی</h2><div class="sub">تابلوهای تسویه‌نشده و دارای پرداخت جزئی</div><div id="backlogBars" class="barlist" style="margin-top:18px"></div></div>
+   </div>
+   <div class="card"><h2>گزارش تفصیلی خیابان‌ها</h2><div class="tablewrap"><table><thead><tr><th>خیابان</th><th>کل</th><th>تسویه</th><th>تسویه‌نشده</th><th>پرداخت جزئی</th><th>دارای اخطار</th><th>بیش از ۲۴ متر</th><th>درصد تسویه</th></tr></thead><tbody id="reportTable"></tbody></table></div></div>
+   <div class="card section"><h2>روند نمونه تسویه‌ها</h2><div class="sub">این روند، برآورد فرضی است و تاریخچه واقعی روزانه محسوب نمی‌شود.</div><div id="trendBars" class="barlist" style="margin-top:15px"></div></div>
+  </section>
+
+  <section class="page" id="page-daily">
+   <div class="pagehead"><div><h1>گزارش روزانه</h1><div class="sub">تغییرات ثبت‌شده در طول دوره نمایشی</div></div><button class="btn" onclick="renderAll()">به‌روزرسانی گزارش</button></div>
+   <div class="notice">تعداد رویدادهای اخطار با تعداد تابلوهای اخطارگرفته یکی نیست. یک تابلو می‌تواند چند رویداد اخطار داشته باشد.</div>
+   <div class="grid" id="dailyMetrics"></div>
+   <div class="card"><h2>رویدادهای اخیر در همین نشست</h2><div class="tablewrap"><table><thead><tr><th>تاریخ</th><th>شناسه تابلو</th><th>خیابان</th><th>نوع رویداد</th><th>شرح</th></tr></thead><tbody id="activityRows"></tbody></table></div></div>
+   <div class="card section"><h2>خلاصه روزهای دوره نمونه</h2><div id="dailyBars" class="barlist"></div></div>
+  </section>
+
+  <section class="page" id="page-help">
+   <div class="pagehead"><h1>راهنمای استفاده</h1></div>
+   <div class="card">
+    <h2>شروع سریع</h2>
+    <ol>
+     <li>از «فهرست تابلوها» برای جست‌وجو و مشاهده پرونده استفاده کن.</li>
+     <li>از «ثبت تابلو / ویرایش» برای ثبت اطلاعات جدید یا اصلاح پرونده موجود استفاده کن.</li>
+     <li>برای ثبت پرداخت، مبلغ پرداخت‌شده و وضعیت مالی را تغییر بده؛ مجموع پرداخت نباید از مبلغ کل بیشتر باشد.</li>
+     <li>برای ثبت مرحله جدید اخطار، پرونده را ویرایش کن و مرحله بالاتری انتخاب کن. تاریخچه اخطارهای قبلی باقی می‌ماند.</li>
+     <li>وضعیت ابلاغ و وضعیت رفع تخلف جدا از وضعیت مالی هستند؛ تسویه عوارض به‌تنهایی به معنی رفع تخلف نیست.</li>
+     <li>از «دستور کار مدیر» برای ثبت مأموریت، تعیین مهلت و ثبت نتیجه استفاده کن.</li>
+    </ol>
+    <h2>منطق مساحت</h2>
+    <ul><li>کمتر از ۶ مترمربع: گروه اول</li><li>از ۶ تا ۲۴ مترمربع، شامل هر دو مرز: گروه دوم</li><li>بیشتر از ۲۴ مترمربع: گروه سوم</li></ul>
+    <h2>محدودیت‌های نسخه نمایشی</h2>
+    <ul>
+     <li>هیچ پایگاه داده یا ذخیره‌سازی دائمی وجود ندارد؛ با بارگذاری مجدد صفحه تغییرات پاک می‌شوند.</li>
+     <li>تصاویر انتخاب‌شده هم موقت هستند و برای اشتراک یا آرشیو دائمی مناسب نیستند.</li>
+     <li>این نسخه احراز هویت، سطح دسترسی، ثبت سابقه غیرقابل‌دستکاری یا پشتیبان‌گیری ندارد.</li>
+     <li>برای استفاده رسمی شهرداری، به پایگاه داده، ورود کاربران، ثبت سوابق، کنترل دسترسی، پشتیبان‌گیری و بررسی امنیت نیاز است.</li>
+     <li>سناریوی پایان ماه، برآورد ساده و فرضی است؛ پیش‌بینی آماری معتبر یا تضمین عملکرد نیست.</li>
+    </ul>
+   </div>
+  </section>
+  <div class="footer">نسخه نمایشی سامانه مدیریت تابلوهای شهری ـ داده‌های فرضی</div>
+ </main>
+</div>
+
+<script>
+"use strict";
+
+const STREETS = [
+ {name:"سنگی",total:200,settled:40},
+ {name:"بهمنی",total:180,settled:45},
+ {name:"باغ زهرا",total:160,settled:24},
+ {name:"طالقانی",total:220,settled:55},
+ {name:"امام",total:240,settled:36},
+ {name:"مدرس",total:200,settled:40}
+];
+const $ = id => document.getElementById(id);
+const todayISO = "2026-10-20";
+let signs = [];
+let tasks = [];
+let activities = [];
+let photoUrls = [];
+let editingId = null;
+let nextId = 1201;
+
+function persian(n){return Number(n||0).toLocaleString("fa-IR");}
+function money(n){return persian(n)+" ریال";}
+function isoDay(day){return "2026-10-"+String(day).padStart(2,"0");}
+function financeLabel(s){return ({settled:"تسویه‌شده",unsettled:"تسویه‌نشده",partial:"پرداخت جزئی"})[s]||s;}
+function warningLabel(n){return n?("اخطار "+["","اول","دوم","سوم"][Math.min(n,3)]):"بدون اخطار";}
+function permitLabel(s){return ({unknown:"بررسی‌نشده",licensed:"دارای مجوز",unlicensed:"فاقد مجوز",expired:"مجوز منقضی"})[s]||s;}
+function violationLabel(s){return ({active:"تخلف برقرار",fixed:"رفع تخلف شده",review:"نیازمند بررسی"})[s]||s;}
+function maxWarning(s){return s.warnings.length?Math.max(...s.warnings.map(w=>w.stage)):0;}
+function moneyNumber(n){return Math.max(0,Number(n)||0);}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function areaGroup(a){return a<6?"کمتر از ۶ متر":a<=24?"۶ تا ۲۴ متر":"بیشتر از ۲۴ متر";}
+function financeClass(s){return s==="settled"?"green":s==="partial"?"orange":"red";}
+function statusBadge(text,cls){return `<span class="badge ${cls||""}">${esc(text)}</span>`;}
+
+function seedData(){
+ signs=[];tasks=[];activities=[];nextId=1201;
+ let id=1, settledIndex=0;
+ STREETS.forEach((st,si)=>{
+  for(let i=0;i<st.total;i++){
+   const settled=i<st.settled;
+   const area=[4.5,8,12,18,27,32,5.5,22,25,10][(i+si*3)%10];
+   let paid=settled?10000000:0;
+   let finance=settled?"settled":"unsettled";
+   const s={
+    id:"SG-"+String(id).padStart(4,"0"),street:st.name,
+    owner:["فروشگاه نمونه","واحد تجاری نمونه","شرکت فرضی","تابلوی خدماتی","مجموعه تجاری نمونه"][(i+si)%5],
+    address:"خیابان "+st.name+"، پلاک "+(i+1),
+    area,type:["سردر","پشت‌بام","دیوارکوب"][(i+si)%3],
+    permit:(i%7===0)?"unlicensed":(i%11===0?"expired":"unknown"),
+    finance,due:10000000,paid,
+    violation:(i%9===0)?"fixed":"active",
+    warnings:[],photos:[],notes:"داده فرضی برای نمایش سامانه",
+    reportDate:isoDay(1+(i%20)),settledDate:null
+   };
+   if(settled){
+    settledIndex++;
+    // 198 settlements spread over days 1–13; 42 across days 14–20 (6/day).
+    const d=settledIndex<=198?1+((settledIndex-1)%13):14+Math.floor((settledIndex-199)/6);
+    s.settledDate=isoDay(Math.min(d,20));
+   }
+   signs.push(s);id++;
+  }
+ });
+ // 400 first-warning events, 250 second-warning events, 130 third-warning events.
+ // Overlapping stages represent multiple events on the same sign.
+ for(let i=0;i<400;i++){
+  const s=signs[i];
+  s.warnings.push({stage:1,date:isoDay(2+(i%18)),served:i%3!==0});
+  if(i<250)s.warnings.push({stage:2,date:isoDay(8+(i%12)),served:i%4!==0});
+  if(i<130)s.warnings.push({stage:3,date:isoDay(14+(i%7)),served:i%5!==0});
+ }
+ tasks=[
+  {id:1,title:"بررسی تابلوهای بزرگ خیابان سنگی",desc:"فهرست تابلوهای بیش از ۲۴ مترمربع بررسی و نتیجه در پرونده ثبت شود.",street:"سنگی",priority:"high",deadline:"2026-10-24",status:"new",result:"",created:todayISO},
+  {id:2,title:"بازبینی وضعیت ابلاغ اخطارها",desc:"موارد دارای اخطار ثبت‌شده اما ابلاغ‌نشده مشخص و پیگیری شوند.",street:"همه خیابان‌ها",priority:"high",deadline:"2026-10-26",status:"doing",result:"در حال بررسی نمونه‌ها",created:todayISO},
+  {id:3,title:"تهیه گزارش عملکرد شش خیابان",desc:"درصد تسویه، تعداد تابلوهای باقی‌مانده و اولویت پیگیری جمع‌بندی شود.",street:"همه خیابان‌ها",priority:"medium",deadline:"2026-10-30",status:"new",result:"",created:todayISO}
+ ];
+ activities=[
+  {date:isoDay(20),id:"—",street:"همه خیابان‌ها",type:"گزارش نمونه",desc:"شروع دوره نمایشی با داده‌های فرضی"},
+  {date:isoDay(20),id:"—",street:"همه خیابان‌ها",type:"گزارش نمونه",desc:"آمار اولیه برای نمایش داشبورد آماده شد"}
+ ];
+}
+
+function stats(){
+ const total=signs.length;
+ const settled=signs.filter(s=>s.finance==="settled").length;
+ const partial=signs.filter(s=>s.finance==="partial").length;
+ const unsettled=total-settled;
+ const warned=signs.filter(s=>s.warnings.length>0).length;
+ const events=signs.reduce((a,s)=>a+s.warnings.length,0);
+ const collected=signs.reduce((a,s)=>a+s.paid,0);
+ const balance=signs.reduce((a,s)=>a+Math.max(0,s.due-s.paid),0);
+ return {total,settled,partial,unsettled,warned,events,collected,balance,rate:total?settled/total*100:0};
+}
+function streetStats(name){
+ const arr=signs.filter(s=>s.street===name);
+ const settled=arr.filter(s=>s.finance==="settled").length;
+ return {name,total:arr.length,settled,unsettled:arr.length-settled,
+  partial:arr.filter(s=>s.finance==="partial").length,
+  warned:arr.filter(s=>s.warnings.length>0).length,
+  large:arr.filter(s=>s.area>24).length,
+  rate:arr.length?settled/arr.length*100:0};
+}
+function addActivity(id,street,type,desc,date=todayISO){
+ activities.unshift({date,id,street,type,desc});
+ activities=activities.slice(0,150);
+}
+function cardMetric(label,value,icon,cls="",note=""){
+ return `<div class="card"><div class="metric"><div><div class="label">${label}</div><div class="number ${cls}">${persian(value)}</div><div class="sub">${note}</div></div><div class="icon">${icon}</div></div></div>`;
+}
+function bar(name,a,b,max){
+ const total=Math.max(1,max);
+ const w1=Math.max(0,Math.min(100,a/total*100));
+ const w2=Math.max(0,Math.min(100,b/total*100));
+ return `<div class="baritem"><div class="barname">${esc(name)}</div><div class="track"><span class="fill green" style="width:${w1}%"></span><span class="fill red" style="width:${w2}%"></span></div><div class="barvalue">${persian(a+b)}</div></div>`;
+}
+function singleBar(name,value,max,color="blue",suffix=""){
+ return `<div class="baritem"><div class="barname">${esc(name)}</div><div class="track"><span class="fill ${color}" style="width:${max?Math.min(100,value/max*100):0}%"></span></div><div class="barvalue">${persian(value)}${suffix}</div></div>`;
+}
+
+function renderAll(){
+ renderMetrics();renderStreetCharts();renderWarnings();renderSummaryTable();
+ renderSignTable();renderTasks();renderReports();renderDaily();
+}
+function renderMetrics(){
+ const s=stats();
+ $("metrics").innerHTML=
+ cardMetric("کل تابلوها",s.total,"▤","","در تمام خیابان‌ها")+
+ cardMetric("تسویه‌شده",s.settled,"✓","green",s.rate.toFixed(1)+"٪ از کل")+
+ cardMetric("باقی‌مانده مالی",s.unsettled,"◷","red","شامل پرداخت جزئی")+
+ cardMetric("رویدادهای اخطار",s.events,"!","orange","تعداد اخطارهای ثبت‌شده");
+ $("reportMetrics").innerHTML=
+ cardMetric("کل تابلوها",s.total,"▤")+
+ cardMetric("پرداخت جزئی",s.partial,"◒","orange")+
+ cardMetric("مجموع وصولی",s.collected,"﷼","green")+
+ cardMetric("مانده قابل پرداخت",s.balance,"◷","red");
+ const recent=signs.filter(x=>x.settledDate && x.settledDate>=isoDay(14) && x.settledDate<=isoDay(20)).length;
+ const forecast=Math.min(s.unsettled,s.settled+Math.round(recent/7*10));
+ $("forecastCurrent").textContent=persian(s.settled);
+ $("forecastEnd").textContent=persian(s.settled+forecast-s.settled);
+ $("forecastProgress").style.width=(s.total?(s.settled+forecast-s.settled)/s.total*100:0)+"%";
+ $("forecastNote").textContent=recent?
+ `در داده نمونه، ${persian(recent)} تسویه در روزهای ۱۴ تا ۲۰ ثبت شده است. با فرض تداوم همین روند تا روز ۳۰، حدود ${persian(forecast)} تابلو از وضعیت فعلی باقی‌مانده می‌توانند تسویه شوند؛ این صرفاً سناریوی نمایشی است.`:
+ "داده کافی برای برآورد روند اخیر وجود ندارد.";
+}
+function renderStreetCharts(){
+ const ss=STREETS.map(s=>streetStats(s.name));
+ const max=Math.max(1,...ss.map(x=>x.total));
+ $("streetBars").innerHTML=ss.map(x=>bar(x.name,x.settled,x.unsettled,max)).join("");
+}
+function renderWarnings(){
+ const events=[0,0,0,0];
+ signs.forEach(s=>s.warnings.forEach(w=>events[w.stage]++));
+ const max=Math.max(1,...events);
+ $("warningBars").innerHTML=
+ singleBar("اخطار اول",events[1],max,"blue")+
+ singleBar("اخطار دوم",events[2],max,"orange")+
+ singleBar("اخطار سوم",events[3],max,"red");
+ $("warnedCount").textContent=persian(stats().warned);
+ $("noWarnCount").textContent=persian(stats().total-stats().warned);
+}
+function renderSummaryTable(){
+ $("summaryTable").innerHTML=STREETS.map(st=>{
+  const x=streetStats(st.name);
+  return `<tr><td>${esc(x.name)}</td><td>${persian(x.total)}</td><td class="green">${persian(x.settled)}</td><td class="red">${persian(x.unsettled)}</td><td>${x.rate.toFixed(1)}٪</td><td><button class="btn small" onclick="streetFilter('${esc(x.name)}')">مشاهده تابلوها</button></td></tr>`;
+ }).join("");
+}
+function renderSignTable(){
+ const q=$("searchText").value.trim().toLowerCase();
+ const street=$("filterStreet").value,finance=$("filterFinance").value,warning=$("filterWarning").value;
+ const filtered=signs.filter(s=>{
+  const text=(s.id+" "+s.owner+" "+s.address+" "+s.street).toLowerCase();
+  return (!q||text.includes(q))&&(!street||s.street===street)&&(!finance||s.finance===finance)&&
+   (warning===""||maxWarning(s)===Number(warning));
+ });
+ $("tableCount").textContent=`${persian(filtered.length)} نتیجه؛ نمایش ${persian(Math.min(filtered.length,100))} ردیف`;
+ $("signRows").innerHTML=filtered.slice(0,100).map(s=>{
+  const photo=s.photos[0];
+  return `<tr>
+   <td><b>${esc(s.id)}</b></td>
+   <td>${esc(s.street)}<div class="sub">${esc(s.address)}</div></td>
+   <td>${esc(s.owner)}</td>
+   <td>${persian(s.area)} م²<div class="sub">${areaGroup(s.area)}</div></td>
+   <td>${statusBadge(financeLabel(s.finance),financeClass(s.finance))}<div class="sub">مانده: ${money(Math.max(0,s.due-s.paid))}</div></td>
+   <td>${statusBadge(warningLabel(maxWarning(s)),maxWarning(s)===3?"red":maxWarning(s)===2?"orange":"blue")}<div class="sub">${s.warnings.filter(w=>w.served).length} ابلاغ‌شده از ${s.warnings.length}</div></td>
+   <td>${photo?`<img class="thumb" src="${photo.url}" alt="تصویر تابلو">`:"—"}</td>
+   <td><div class="row"><button class="btn small" onclick="editSign('${s.id}')">ویرایش</button><button class="btn small" onclick="viewSign('${s.id}')">پرونده</button></div></td>
+  </tr>`;
+ }).join("")||`<tr><td colspan="8" class="empty">موردی پیدا نشد.</td></tr>`;
+}
+function fillOptions(){
+ const opts=STREETS.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join("");
+ $("fStreet").innerHTML=opts;
+ $("filterStreet").innerHTML=`<option value="">همه خیابان‌ها</option>`+opts;
+ $("tStreet").innerHTML=`<option value="همه خیابان‌ها">همه خیابان‌ها</option>`+opts;
+}
+function showPage(name){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $("page-"+name).classList.add("active");
+ document.querySelectorAll(".navbtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ if(name==="signs")renderSignTable();
+ if(name==="dashboard")renderAll();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".navbtn[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+function openNewSign(){
+ resetSignForm();
+ $("fId").value="SG-"+String(nextId).padStart(4,"0");
+ $("fDate").value=todayISO;$("fWarningDate").value=todayISO;
+ $("formHeading").textContent="ثبت تابلوی جدید";
+ showPage("editor");
+}
+function resetSignForm(){
+ $("signForm").reset();editingId=null;photoUrls=[];
+ $("editId").value="";$("currentPhotos").textContent="هنوز تصویری ثبت نشده است.";
+ $("fFinance").value="unsettled";$("fDue").value="10000000";$("fPaid").value="0";
+ $("fWarning").value="0";$("fServed").value="no";
+ $("formHeading").textContent="ثبت تابلوی جدید";
+}
+function editSign(id){
+ const s=signs.find(x=>x.id===id);if(!s)return;
+ editingId=id;photoUrls=[];
+ $("editId").value=id;$("fId").value=s.id;$("fStreet").value=s.street;
+ $("fOwner").value=s.owner;$("fAddress").value=s.address;$("fArea").value=s.area;
+ $("fType").value=s.type;$("fPermit").value=s.permit;$("fDate").value=s.reportDate||todayISO;
+ $("fNotes").value=s.notes||"";$("fFinance").value=s.finance;$("fDue").value=s.due;$("fPaid").value=s.paid;
+ $("fWarning").value=String(maxWarning(s));$("fServed").value="no";$("fWarningDate").value=todayISO;
+ $("fViolation").value=s.violation;
+ $("fPhotos").value="";renderCurrentPhotos(s);
+ $("formHeading").textContent="ویرایش پرونده "+s.id;
+ showPage("editor");
+}
+function renderCurrentPhotos(s){
+ if(!s.photos.length){$("currentPhotos").textContent="هنوز تصویری ثبت نشده است.";return;}
+ $("currentPhotos").innerHTML=s.photos.map(p=>`<span style="display:inline-block;margin:3px"><img class="thumb" src="${p.url}" alt="${esc(p.caption)}"><br><small>${esc(p.caption)}</small></span>`).join("");
+}
+function viewSign(id){
+ const s=signs.find(x=>x.id===id);if(!s)return;
+ editSign(id);
+ $("currentPhotos").scrollIntoView({behavior:"smooth",block:"center"});
+}
+$("fPhotos").addEventListener("change",()=>{
+ photoUrls.forEach(p=>URL.revokeObjectURL(p.url));photoUrls=[];
+ Array.from($("fPhotos").files||[]).forEach(file=>{
+  if(file.type.startsWith("image/"))photoUrls.push({url:URL.createObjectURL(file),caption:$("fPhotoCaption").value.trim()||file.name});
+ });
+ const existing=editingId?signs.find(s=>s.id===editingId)?.photos||[]:[];
+ $("currentPhotos").innerHTML=[...existing,...photoUrls].map(p=>`<span style="display:inline-block;margin:3px"><img class="thumb" src="${p.url}" alt=""><br><small>${esc(p.caption)}</small></span>`).join("")||"هنوز تصویری ثبت نشده است.";
+});
+$("signForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const id=$("fId").value.trim();
+ if(!id){alert("شناسه تابلو را وارد کن.");return;}
+ if(signs.some(s=>s.id===id&&s.id!==editingId)){alert("این شناسه قبلاً ثبت شده است.");return;}
+ const due=moneyNumber($("fDue").value),paid=moneyNumber($("fPaid").value);
+ if(paid>due){alert("مبلغ پرداخت‌شده نمی‌تواند از مبلغ کل بیشتر باشد.");return;}
+ let finance=$("fFinance").value;
+ if(due===0||paid>=due)finance="settled";
+ else if(paid>0)finance="partial";
+ else finance="unsettled";
+ const old=editingId?signs.find(s=>s.id===editingId):null;
+ const stage=Number($("fWarning").value);
+ let warnings=old?old.warnings.slice():[];
+ const highest=warnings.length?Math.max(...warnings.map(w=>w.stage)):0;
+ if(stage>highest){
+  warnings.push({stage,date:$("fWarningDate").value||todayISO,served:$("fServed").value==="yes"});
+ }
+ const s={
+  id,street:$("fStreet").value,owner:$("fOwner").value.trim(),
+  address:$("fAddress").value.trim(),area:Number($("fArea").value),
+  type:$("fType").value,permit:$("fPermit").value,finance,due,paid,
+  violation:$("fViolation").value,warnings,
+  photos:[...(old?old.photos:[]),...photoUrls],
+  notes:$("fNotes").value.trim(),reportDate:$("fDate").value||todayISO,
+  settledDate:finance==="settled"?(old?.settledDate||todayISO):null
+ };
+ if(old){
+  Object.assign(old,s);
+  addActivity(id,s.street,"ویرایش پرونده","اطلاعات تابلو و وضعیت پرونده ویرایش شد.");
+ }else{
+  signs.push(s);nextId++;
+  addActivity(id,s.street,"ثبت تابلو","تابلوی جدید ثبت شد.");
+ }
+ if(stage>highest)addActivity(id,s.street,"ثبت اخطار",warningLabel(stage)+"؛ "+($("fServed").value==="yes"?"ابلاغ‌شده":"ابلاغ‌نشده"));
+ if(old&&old.finance!==finance)addActivity(id,s.street,"تغییر وضعیت مالی",financeLabel(finance));
+ photoUrls=[];renderAll();showPage("signs");
+ alert("اطلاعات در محیط نمایشی ثبت شد. با تازه‌سازی صفحه، داده‌های تغییرکرده از بین می‌روند.");
+});
+function streetFilter(name){$("filterStreet").value=name;$("searchText").value="";showPage("signs");renderSignTable();}
+function clearFilters(){$("searchText").value="";$("filterStreet").value="";$("filterFinance").value="";$("filterWarning").value="";renderSignTable();}
+["searchText","filterStreet","filterFinance","filterWarning"].forEach(id=>{
+ $(id).addEventListener(id==="searchText"?"input":"change",renderSignTable);
+});
+
+function renderTasks(){
+ const counts={new:tasks.filter(t=>t.status==="new").length,doing:tasks.filter(t=>t.status==="doing").length,done:tasks.filter(t=>t.status==="done").length};
+ $("taskMetrics").innerHTML=
+ cardMetric("دستور کارهای جدید",counts.new,"＋","orange")+
+ cardMetric("در حال انجام",counts.doing,"◷","")+
+ cardMetric("تکمیل‌شده",counts.done,"✓","green")+
+ cardMetric("مجموع دستور کار",tasks.length,"☑","");
+ const total=Math.max(1,tasks.length);
+ $("taskProgress").innerHTML=`<div class="spread"><span>پیشرفت تکمیل</span><b>${Math.round(counts.done/total*100)}٪</b></div><div class="progress"><span style="width:${counts.done/total*100}%"></span></div><div class="sub">${persian(counts.done)} از ${persian(tasks.length)} دستور کار تکمیل شده است.</div>`;
+ const filter=$("taskFilter").value;
+ const list=tasks.filter(t=>!filter||t.status===filter);
+ $("taskList").innerHTML=list.map(t=>`
+ <div class="task ${t.status==="done"?"done":""}">
+  <div class="spread"><div class="tasktitle">${esc(t.title)}</div>${statusBadge(({new:"جدید",doing:"در حال انجام",done:"تکمیل‌شده"})[t.status],t.status==="done"?"green":t.status==="doing"?"blue":"orange")}</div>
+  <div class="taskmeta">خیابان: ${esc(t.street)} | اولویت: ${({high:"بالا",medium:"متوسط",low:"پایین"})[t.priority]} | مهلت: ${esc(t.deadline)}</div>
+  <div class="taskdesc">${esc(t.desc)}</div>
+  ${t.result?`<div class="sub">نتیجه: ${esc(t.result)}</div>`:""}
+  <div class="row" style="margin-top:9px">
+   <select style="max-width:150px" aria-label="وضعیت دستور کار" onchange="changeTaskStatus(${t.id},this.value)"><option value="new" ${t.status==="new"?"selected":""}>جدید</option><option value="doing" ${t.status==="doing"?"selected":""}>در حال انجام</option><option value="done" ${t.status==="done"?"selected":""}>تکمیل‌شده</option></select>
+   <button class="btn small" onclick="taskResult(${t.id})">ثبت نتیجه</button>
+  </div>
+ </div>`).join("")||`<div class="empty">دستور کاری وجود ندارد.</div>`;
+}
+$("taskForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const t={id:Math.max(0,...tasks.map(x=>x.id))+1,title:$("tTitle").value.trim(),desc:$("tDesc").value.trim(),street:$("tStreet").value,priority:$("tPriority").value,deadline:$("tDeadline").value,status:"new",result:"",created:todayISO};
+ tasks.unshift(t);$("taskForm").reset();renderTasks();addActivity("—",t.street,"دستور کار جدید",t.title);
+ alert("دستور کار در همین نشست ثبت شد؛ ذخیره دائمی نیست.");
+});
+function changeTaskStatus(id,status){
+ const t=tasks.find(x=>x.id===id);if(!t)return;
+ t.status=status;renderTasks();addActivity("—",t.street,"تغییر دستور کار",t.title+"؛ "+status);
+}
+function taskResult(id){
+ const t=tasks.find(x=>x.id===id);if(!t)return;
+ const result=prompt("شرح نتیجه یا اقدام انجام‌شده را وارد کن:",t.result||"");
+ if(result===null)return;
+ t.result=result.trim();renderTasks();addActivity("—",t.street,"ثبت نتیجه دستور کار",t.title);
+}
+
+function renderReports(){
+ const areas=[{name:"کمتر از ۶ متر",n:signs.filter(s=>s.area<6).length},{name:"۶ تا ۲۴ متر",n:signs.filter(s=>s.area>=6&&s.area<=24).length},{name:"بیشتر از ۲۴ متر",n:signs.filter(s=>s.area>24).length}];
+ const maxArea=Math.max(1,...areas.map(x=>x.n));
+ $("areaBars").innerHTML=areas.map(x=>singleBar(x.name,x.n,maxArea)).join("");
+ const ranked=STREETS.map(x=>streetStats(x.name)).sort((a,b)=>b.unsettled-a.unsettled);
+ const maxBack=Math.max(1,...ranked.map(x=>x.unsettled));
+ $("backlogBars").innerHTML=ranked.map(x=>singleBar(x.name,x.unsettled,maxBack,"red")).join("");
+ $("reportTable").innerHTML=STREETS.map(st=>{
+  const x=streetStats(st.name);
+  return `<tr><td>${esc(x.name)}</td><td>${persian(x.total)}</td><td>${persian(x.settled)}</td><td>${persian(x.unsettled-x.partial)}</td><td>${persian(x.partial)}</td><td>${persian(x.warned)}</td><td>${persian(x.large)}</td><td>${x.rate.toFixed(1)}٪</td></tr>`;
+ }).join("");
+ const trend=[1,5,10,15,20,25,30].map(d=>{
+  const settledNow=signs.filter(s=>s.finance==="settled"&&s.settledDate&&Number(s.settledDate.slice(-2))<=Math.min(d,20)).length;
+  if(d<=20)return {d,n:settledNow};
+  const recent=signs.filter(s=>s.settledDate&&s.settledDate>=isoDay(14)&&s.settledDate<=isoDay(20)).length;
+  return {d,n:Math.min(stats().total,stats().settled+Math.round(recent/7*(d-20)))};
+ });
+ const maxTrend=Math.max(1,...trend.map(x=>x.n));
+ $("trendBars").innerHTML=trend.map(x=>singleBar("روز "+x.d,x.n,maxTrend,"blue")).join("");
+}
+function renderDaily(){
+ const s=stats();
+ const todayEvents=activities.filter(a=>a.date===todayISO).length;
+ $("dailyMetrics").innerHTML=
+ cardMetric("رویدادهای ثبت‌شده",activities.length,"◷")+
+ cardMetric("رویدادهای امروز",todayEvents,"＋","blue")+
+ cardMetric("کل رویدادهای اخطار",s.events,"!","orange")+
+ cardMetric("تسویه‌شده فعلی",s.settled,"✓","green");
+ $("activityRows").innerHTML=activities.slice(0,100).map(a=>`<tr><td>${esc(a.date)}</td><td>${esc(a.id)}</td><td>${esc(a.street)}</td><td>${esc(a.type)}</td><td>${esc(a.desc)}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">هنوز رویدادی ثبت نشده است.</td></tr>`;
+ const days=[1,5,10,15,20];
+ const vals=days.map(d=>({d,n:signs.filter(s=>s.settledDate&&Number(s.settledDate.slice(-2))<=d).length}));
+ const mx=Math.max(1,...vals.map(x=>x.n));
+ $("dailyBars").innerHTML=vals.map(x=>singleBar("روز "+x.d,x.n,mx,"green")).join("");
+}
+function renderFollowups(){
+ const items=[];
+ const largeNoWarning=signs.filter(s=>s.area>24&&s.warnings.length===0).length;
+ const overdue=tasks.filter(t=>t.status!=="done"&&t.deadline<todayISO).length;
+ const noPermit=signs.filter(s=>s.permit==="unlicensed"||s.permit==="expired").length;
+ const unpaid=stats().unsettled;
+ items.push({title:"تابلوهای باقیمانده مالی",value:unpaid,desc:"برای پیگیری تسویه"});
+ items.push({title:"تابلوهای بزرگ بدون اخطار",value:largeNoWarning,desc:"بیش از ۲۴ مترمربع"});
+ items.push({title:"فاقد مجوز یا دارای مجوز منقضی",value:noPermit,desc:"نیازمند بررسی وضعیت مجوز"});
+ items.push({title:"دستور کارهای عقب‌افتاده",value:overdue,desc:"گذشته از مهلت تعیین‌شده"});
+ items.push({title:"تابلوهای دارای اخطار سوم",value:signs.filter(s=>maxWarning(s)===3).length,desc:"بررسی مرحله بعدی پیگیری"});
+ $("followups").innerHTML=items.map(x=>`<div class="spread" style="padding:8px 0;border-bottom:1px solid var(--line)"><div><b>${esc(x.title)}</b><div class="sub">${esc(x.desc)}</div></div><span class="badge ${x.value?"orange":"green"}">${persian(x.value)}</span></div>`).join("");
+}
+const oldRenderMetrics=renderMetrics;
+renderMetrics=function(){oldRenderMetrics();renderFollowups();};
+
+function downloadCSV(){
+ const rows=[["شناسه","خیابان","مالک","نشانی","مساحت","نوع","مجوز","وضعیت مالی","مبلغ کل","پرداخت","مانده","مرحله اخطار","تعداد اخطار","رفع تخلف"]];
+ signs.forEach(s=>rows.push([s.id,s.street,s.owner,s.address,s.area,s.type,permitLabel(s.permit),financeLabel(s.finance),s.due,s.paid,Math.max(0,s.due-s.paid),maxWarning(s),s.warnings.length,violationLabel(s.violation)]));
+ const csv="\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="municipal-signs-demo.csv";a.click();URL.revokeObjectURL(url);
+}
+$("resetBtn").addEventListener("click",()=>{
+ if(!confirm("تمام تغییرات این نشست پاک و داده‌های فرضی اولیه جایگزین شوند؟"))return;
+ photoUrls.forEach(p=>URL.revokeObjectURL(p.url));photoUrls=[];
+ seedData();clearFilters();resetSignForm();renderAll();showPage("dashboard");
+});
+$("taskFilter").addEventListener("change",renderTasks);
+
+fillOptions();
+seedData();
+renderAll();
+</script>
+</body>
+</html>
